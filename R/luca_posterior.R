@@ -1,3 +1,5 @@
+#' @importFrom mvtnorm dmvnorm 
+
 #mu_true=[1.6 1.4]';
 #Marglike_true=1;
 lposterior_1 <- function(x){
