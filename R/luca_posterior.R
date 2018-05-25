@@ -79,14 +79,13 @@ lposterior_5 <- function(x){
 
 
 lposterior_6 <- function(x){
-  # b <- 3
-  # sig  <- 1 
-  b <- 10
-  sig  <- 3.5 
+  b <- 10;
+  sig  <- 3.5; 
   x1 <- x[1]
   x2 <- x[2]
   # logtarget= -x(1,:).^2/(2*sig^2) - ( x(2,:) + b*(x(1,:).^2 - sig.^2)).^2/(2*sig^2);
   # f=exp(logtarget)
   # logtarget <-  -x1^2/(2*sig^2) - (x2 + b*(x1^2 - sig^2))^2/(2*sig^2)
-  logtarget <- -(4-b*x1-x2^2)^2/(2*4^2) - x1^2/(2*sig^2) -x2^2/(2*sig^2)
+  logtarget <- (4-b*x1-x2^2)^2/(2*4^2)-x1^2/(2*sig^2)-x2^2/(2*sig^2)
+
 }

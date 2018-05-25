@@ -15,7 +15,7 @@ compute_denomtable_byrow <- function(x_arr, mu_arr, sigma){
   for(i in seq.int(dim(denom_res)[1])){
     for(j in seq.int(dim(denom_res)[2])){
       for(k in seq.int(dim(denom_res)[3])){
-        denom_res[i, j, k] <- sum(apply(mu_arr[i,,], 2, function(mu) eval_proposal(x_arr[i, ,j, k], mu, sigma)))
+        denom_res[i, j, k] <- mean(apply(mu_arr[i,,], 2, function(mu) eval_proposal(x_arr[i, ,j, k], mu, sigma)))
       }
     }
   }
@@ -27,7 +27,7 @@ compute_denomtable_bytable <- function(x_arr, mu_arr, sigma){
   for(i in seq.int(dim(denom_res)[1])){
     for(j in seq.int(dim(denom_res)[2])){
       for(k in seq.int(dim(denom_res)[3])){
-        denom_res[i, j, k] <- sum(apply(apply(mu_arr, 2, identity), 1, function(mu) eval_proposal(x_arr[i, ,j, k], mu, sigma)))
+        denom_res[i, j, k] <- mean(apply(apply(mu_arr, 2, identity), 1, function(mu) eval_proposal(x_arr[i, ,j, k], mu, sigma)))
       }
     }
   }
