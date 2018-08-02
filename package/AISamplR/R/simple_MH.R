@@ -1,12 +1,17 @@
-simple_MH <- function(logposterior, d, T = 100, mu = NULL, sigma){
-  if(d != length(sigma)) stop("d != length(sigma)")
-  x <- matrix(0, nrow = T, ncol=d)
-  if(!is.null(mu)) x[1, ] <- mu
-  proposition  <- rnorm(d, mean = x[1, ], sd = sigma)
-  if(d != length(proposition)) stop("d != length(proposition)")
+simple_MH <- function(logposterior, mu, sigma, T = 100){
+  UseMethod("simple_MH", logposterior)
+}
+
+simple_MH.function <- function(logposterior, mu, sigma, T = 100){
+  if(length(mu) != length(sigma)) stop("length(mu) != length(sigma)")
+  D <- length(mu)
+  x <- matrix(0, nrow = T, ncol = D)
+  x[1, ] <- mu
+  proposition  <- rnorm(D, mean = x[1, ], sd = sigma)
+  if(length(mu) != length(proposition)) stop("length(mu) != length(proposition)")
   prev_lposterior <- logposterior(x[1, ])
   for (i in 2:T){
-    proposition  <- rnorm(d, mean = x[i-1, ], sd = sigma)
+    proposition  <- rnorm(D, mean = x[i-1, ], sd = sigma)
     #acceptance prob
     cur_lposterior <- logposterior(proposition)
     rho <- exp(cur_lposterior - prev_lposterior)
@@ -22,3 +27,13 @@ simple_MH <- function(logposterior, d, T = 100, mu = NULL, sigma){
   }
   return(x)
 }
+
+simple_MH.externalptr <- function(logposterior, mu, sigma, T = 100){
+  simple_MH_rcpp(
+    lp = logposterior,
+    mu = mu,
+    sigma = sigma,
+    T = T
+  )
+}
+
