@@ -39,7 +39,6 @@ arma::mat rmvnorm_arma(int n, arma::vec mu, arma::mat sigma) {
   return arma::repmat(mu, 1, n).t() + Y * arma::chol(sigma);
 }
 
-/*
 // [[Rcpp::export]]
 NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T = 100){
   Rcout << "simple_MH called \n";
@@ -75,6 +74,7 @@ NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVect
   return x;
 }
 
+// [[Rcpp::export]]
 NumericVector gen_mu_chains_mcmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma, int T = 100, int N = 2){
   int D = mu.ncol();
   if(D != sigma.length()) stop("different dimension for sigma and mu");
@@ -94,6 +94,7 @@ NumericVector gen_mu_chains_mcmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, Nu
   return(mus_res);
 }
 
+// [[Rcpp::export]]
 NumericVector gen_xs_rcpp(NumericVector mu, NumericVector sigma, int D, int T, int N, int M){
   if(D * T * N != mu.length()) stop("D * T * N != mu.length()");
   NumericVector x_res(D * T * N * M);
@@ -114,6 +115,7 @@ NumericVector gen_xs_rcpp(NumericVector mu, NumericVector sigma, int D, int T, i
   return(x_res);
 }
 
+// [[Rcpp::export]]
 NumericVector create_loglik_table_rcpp(fp_logposterior_t lp, NumericVector x, int D, int T,  int N, int M){
   if(D * T * N * M != x.length()) stop("D * T * N * M != x.length()");
   NumericVector loglik_res(T * N * M);
@@ -130,6 +132,7 @@ NumericVector create_loglik_table_rcpp(fp_logposterior_t lp, NumericVector x, in
   return(loglik_res);
 }
 
+// [[Rcpp::export]]
 NumericVector create_denom_table_bybox_rcpp(NumericVector x, NumericVector mu, NumericVector sigma, int D, int T,  int N, int M){
   if(D * T * N * M != x.length()) stop("D * T * N * M != x.length()");
   NumericVector denom_res(T * N * M);
@@ -167,6 +170,7 @@ NumericVector create_denom_table_bybox_rcpp(NumericVector x, NumericVector mu, N
   return(denom_res);
 }
 
+// [[Rcpp::export]]
 NumericVector create_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, NumericVector sigma, int D, int T,  int N, int M){
   if(D * T * N * M != x.length()) stop("D * T * N * M != x.length()");
   NumericVector denom_res(T * N * M);
@@ -214,6 +218,7 @@ NumericVector create_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, N
   return(denom_res);
 }
 
+// [[Rcpp::export]]
 NumericVector create_denom_table_bytable_rcpp(NumericVector x, NumericVector mu, NumericVector sigma, int D, int T,  int N, int M){
   if(D * T * N * M != x.length()) stop("D * T * N * M != x.length()");
   NumericVector denom_res(T * N * M);
@@ -263,6 +268,7 @@ NumericVector create_denom_table_bytable_rcpp(NumericVector x, NumericVector mu,
   return(denom_res);
 }
 
+// [[Rcpp::export]]
 NumericVector create_weights_table_rcpp(NumericVector loglik_table, NumericVector denom_table, int T,  int N, int M){
   NumericVector weight_table(T * N * M);
   weight_table.attr("dim") = denom_table.attr("dim");
@@ -272,6 +278,7 @@ NumericVector create_weights_table_rcpp(NumericVector loglik_table, NumericVecto
 }
 
 
+// [[Rcpp::export]]
 NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T, int M){
   int D = mu.length();
   // Rcout << "D: "  << D << std::endl ;
@@ -307,6 +314,7 @@ NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, Num
   return(mu_chain); 
 }
 
+// [[Rcpp::export]]
 NumericVector gen_mu_chains_apis_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma, int T, int N, int M){
   int D = mu.ncol();
   NumericVector mu_chains(D * T * N);
@@ -332,6 +340,7 @@ NumericVector gen_mu_chains_apis_rcpp(fp_logposterior_t lp, NumericMatrix mu, Nu
 }
 
 
+// [[Rcpp::export]]
 NumericVector gen_mu_chain_pmc_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T, int M){
   int D = mu.length();
   // Rcout << "D: "  << D << std::endl ;
@@ -371,6 +380,7 @@ NumericVector gen_mu_chain_pmc_rcpp(fp_logposterior_t lp, NumericVector mu, Nume
   return(mu_chain); 
 }
 
+// [[Rcpp::export]]
 NumericVector gen_mu_chains_pmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma, int T, int N, int M){
   int D = mu.ncol();
   NumericVector mu_chains(D * T * N);
