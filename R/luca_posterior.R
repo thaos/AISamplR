@@ -13,13 +13,18 @@ lposterior_1 <- function(x){
   sigma_4 <- matrix(c(3, rep(0, 2), 5), ncol = 2, nrow = 2)
   mu_5 <- c(14, -14)
   sigma_5 <- matrix(c(2, rep(-0.1, 2), 2), ncol = 2, nrow = 2)
-  f_1  <- 1/5 * dmvnorm(x, mean = mu_1 , sigma = sigma_1) 
-  f_2  <- 1/5 * dmvnorm(x, mean = mu_2 , sigma = sigma_2) 
-  f_3  <- 1/5 * dmvnorm(x, mean = mu_3 , sigma = sigma_3) 
-  f_4  <- 1/5 * dmvnorm(x, mean = mu_4 , sigma = sigma_4) 
-  f_5  <- 1/5 * dmvnorm(x, mean = mu_5 , sigma = sigma_5) 
+  f_1  <- dmvnorm(x, mean = mu_1 , sigma = sigma_1) 
+  f_2  <- dmvnorm(x, mean = mu_2 , sigma = sigma_2) 
+  f_3  <- dmvnorm(x, mean = mu_3 , sigma = sigma_3) 
+  f_4  <- dmvnorm(x, mean = mu_4 , sigma = sigma_4) 
+  f_5  <- dmvnorm(x, mean = mu_5 , sigma = sigma_5) 
   f <- f_1 + f_2 + f_3 + f_4 + f_5
-  log(f)
+  # print(paste("f_1 = " ,  f_1))
+  # print(paste("f_2 = " ,  f_2))
+  # print(paste("f_3 = " ,  f_3))
+  # print(paste("f_4 = " ,  f_4))
+  # print(paste("f_5 = " ,  f_5))
+  log(f) - log(5)
 }
   
 # mu_true=[0 16]';
@@ -53,14 +58,14 @@ lposterior_3 <- function(x){
   log(f)
 }
 
-# mu <- true=[0 16 5 -5]';
+# mu_true=[0 16 5 -5]';
 # Marglike_true=1;
 # mu2=[0 16 5 -5];
 # sig=4;
 # SIGMA2 = sig*eye(DIM);
 # f=mvnpdf(x,mu2,SIGMA2);
 lposterior_4 <- function(x){
-  mu <- c(0, 16, 15, -50)
+  mu <- c(0, 16, 5, -5)
   sigma <- diag(4, 4)
   dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
 }
@@ -79,13 +84,8 @@ lposterior_5 <- function(x){
 
 
 lposterior_6 <- function(x){
-  b <- 10;
-  sig  <- 3.5; 
   x1 <- x[1]
   x2 <- x[2]
-  # logtarget= -x(1,:).^2/(2*sig^2) - ( x(2,:) + b*(x(1,:).^2 - sig.^2)).^2/(2*sig^2);
-  # f=exp(logtarget)
-  # logtarget <-  -x1^2/(2*sig^2) - (x2 + b*(x1^2 - sig^2))^2/(2*sig^2)
-  logtarget <- (4-b*x1-x2^2)^2/(2*4^2)-x1^2/(2*sig^2)-x2^2/(2*sig^2)
-
+  logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
 }
+

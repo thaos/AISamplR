@@ -1,9 +1,11 @@
-
 #include <algorithm>    // std::min
 #include <RcppArmadillo.h>
 // [[Rcpp::depends(RcppArmadillo)]]
 
-#include <Rcpp.h>
+// [[Rcpp::depends(RcppProgress)]]
+#include <progress.hpp>
+#include <progress_bar.hpp>
+
 using namespace Rcpp;
 
 // This is a simple example of exporting a C++ function to R. You can
@@ -17,20 +19,10 @@ using namespace Rcpp;
 //
 // Sys.setenv("PKG_CXXFLAGS"="-std=c++11")
 // [[Rccp::plugins(cpp11)]]
-// [[Rcpp::export]]
 
-
-NumericVector timesTwo(NumericVector x) {
-  return x * 2;
-}
-
-typedef double (*funcPtrG)(NumericVector x);
-typedef XPtr<funcPtrG> fptr_t;
 
 typedef double (*fp_logposterior)(NumericVector x);
 typedef XPtr<fp_logposterior> fp_logposterior_t;
-
-#include <RcppArmadillo.h>
 
 const double log2pi = std::log(2.0 * M_PI);
 
@@ -66,121 +58,12 @@ arma::mat rmvnorm_arma(int n, arma::vec mu, arma::mat sigma) {
   arma::mat Y = arma::randn(n, ncols);
   return arma::repmat(mu, 1, n).t() + Y * arma::chol(sigma);
 }
-  
-  
-// [[Rcpp::export]]
-double lposterior2(NumericVector x){
-  double mu_arr[2] = {0, 16};
-  double sigma_arr[4] = {3, 0, 0, 3};
-  arma::rowvec mu(&mu_arr[0], 2);
-  arma::mat sigma(&sigma_arr[0], 2, 2);
-  // Rcout << "x : " << x << std::endl ;
-  arma::mat xmat(1, x.length());
-  for(std::size_t i = 0 ; i < x.length() ; ++i ){
-    xmat(0, i) = x(i); 
-  }
-  // Rcout << "xmat : "  << xmat << std::endl ;
-  // Rcout << "Je bug pas encore" << std::endl ;
-  double ans = sum(dmvnorm_arma(xmat, mu, sigma, true));
-  // Rcout << "x.length : " << x.length() << std::endl ;
-  // for(std::size_t i = 0 ; i < x.length() ; ++i ){   
-  //   Rcout << "i : " << i << std::endl ;
-  //   Rcout << "x : " << x(i) << std::endl ;
-  //   ans +=  R::dnorm(x(i), 0.0, 1.0, true) ;
-  // }
-  // Rcout << "ans : " << ans << std::endl ;
-  return(ans) ;
-}
 
 // [[Rcpp::export]]
-double lposterior1(NumericVector x){
-  double muarr_1[2] = {-10, -10};
-  double muarr_2[2] = {0, 16};
-  double muarr_3[2] = {13, 8};
-  double muarr_4[2] = {-9, 7};
-  double muarr_5[2] = {14, -14};
-  arma::rowvec mu1(&muarr_1[0], 2);
-  arma::rowvec mu2(&muarr_2[0], 2);
-  arma::rowvec mu3(&muarr_3[0], 2);
-  arma::rowvec mu4(&muarr_4[0], 2);
-  arma::rowvec mu5(&muarr_5[0], 2);
-  double sigarr_1[4] = {2, 0.6, 0.6, 1};
-  double sigarr_2[4] = {2, -0.4, -0.4, 2};
-  double sigarr_3[4] = {2, 0.8, 0.8, 2};
-  double sigarr_4[4] = {3, 0, 0, 5};
-  double sigarr_5[4] = {2, -0.1, -0.1, 2};
-  arma::mat sigma1(&sigarr_1[0], 2, 2);
-  arma::mat sigma2(&sigarr_2[0], 2, 2);
-  arma::mat sigma3(&sigarr_3[0], 2, 2);
-  arma::mat sigma4(&sigarr_4[0], 2, 2);
-  arma::mat sigma5(&sigarr_5[0], 2, 2);
-  arma::mat xmat(1, x.length());
-  for(std::size_t i = 0 ; i < x.length() ; ++i ){
-    xmat(0, i) = x(i); 
-  }
-  double f_1 = sum(dmvnorm_arma(xmat, mu1, sigma1, false));
-  double f_2 = sum(dmvnorm_arma(xmat, mu2, sigma2, false));
-  double f_3 = sum(dmvnorm_arma(xmat, mu3, sigma3, false));
-  double f_4 = sum(dmvnorm_arma(xmat, mu4, sigma4, false));
-  double f_5 = sum(dmvnorm_arma(xmat, mu5, sigma5, false));
-  // Rcout << "f_1 : "  << f_1 << std::endl ;
-  // Rcout << "f_2 : "  << f_2 << std::endl ;
-  // Rcout << "f_3 : "  << f_3 << std::endl ;
-  // Rcout << "f_4 : "  << f_4 << std::endl ;
-  // Rcout << "f_5 : "  << f_5 << std::endl ;
-  double f = f_1 + f_2 + f_3 + f_4 + f_5;
-  return log(f) - log(5);
+double expotest(double x) {
+  return(exp(x));
 }
 
-// [[Rcpp::export]]
-double lposterior6(NumericVector x){
-  double b = 10;
-  double sig = 1; 
-  double x1 = x[0];
-  double x2 = x[1];
-  double  logtarget = -pow(x1, 2)/(2*pow(sig, 2)) - pow(x2 + b*(pow(x1, 2) - pow(sig, 2)), 2) /(2*pow(sig, 2));
-  return logtarget;
-}
-
-// // [[Rcpp::export]]
-// double GGfuncpp(NumericVector x)
-// {
-//   Rcout << "GGfuncpp called\n";
-//   return sum(x);
-// }
-// 
-// [[Rcpp::export]]
-fp_logposterior_t make_lposterior2_cpp()
-{
-  return fp_logposterior_t(new fp_logposterior(lposterior2));
-}
-
-// [[Rcpp::export]]
-fp_logposterior_t make_lposterior1_cpp()
-{
-  return fp_logposterior_t(new fp_logposterior(lposterior1));
-}
-
-// [[Rcpp::export]]
-fp_logposterior_t make_lposterior6_cpp()
-{
-  return fp_logposterior_t(new fp_logposterior(lposterior6));
-}
-// 
-// 
-// // [[Rcpp::export]]
-// fptr_t make_GGfuncpp()
-// {
-//   return fptr_t(new funcPtrG(GGfuncpp));
-// }
-// 
-// // [[Rcpp::export]]
-// double testfun(fptr_t fun2, NumericVector x)
-// {
-//   return (*fun2)(x);
-// }
-// 
-// 
 // [[Rcpp::export]]
 NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T = 100){
   Rcout << "simple_MH called \n";
@@ -210,7 +93,7 @@ NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVect
       x(i, _) = proposition;
       prev_lposterior = cur_lposterior;
     } else{
-        x(i, _) = x(i-1, _);
+      x(i, _) = x(i-1, _);
     }
   } 
   return x;
@@ -318,7 +201,9 @@ NumericVector create_denom_table_bybox_rcpp(NumericVector x, NumericVector mu, N
   for(std::size_t i = 0 ; i < sigma.length() ; ++i ){
     sigma_mat(i, i) = sigma(i); 
   }
+  // Progress p(N * M * T, true);
   for(std::size_t i = 0 ; i < T * N * M; ++i ){
+    Rcpp::checkUserInterrupt() ;
     idx_x = i *  D  + (Rcpp::seq_len(D) - 1);
     // Rcout << "idx_x : "  << idx_x << std::endl ;
     idx_mu = i / M  * D + (Rcpp::seq_len(D) - 1);
@@ -335,8 +220,10 @@ NumericVector create_denom_table_bybox_rcpp(NumericVector x, NumericVector mu, N
     // Rcout << "sigma_mat : "  << sigma_mat << std::endl ;
     // Rcout << "denom : "  << sum(dmvnorm_arma(xmat, mumat, sigma_mat, true)) << std::endl ;
     denom_res[i] =  sum(dmvnorm_arma(xmat, mumat, sigma_mat, false));
+    // p.increment(); // update progress
   }  
-  return(log(denom_res));
+  denom_res = log(denom_res);
+  return(denom_res);
 }
 
 // [[Rcpp::export]]
@@ -357,9 +244,11 @@ NumericVector create_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, N
   double denom = 0;
   int i;
   int j;
+  Progress p(N * M * T, true);
   // or(std::size_t i = 0 ; i < T * N * M; ++i ){
   for(std::size_t m = 0 ; m < M ; ++m ){
     for(std::size_t n = 0 ; n < N ; ++n ){
+      Rcpp::checkUserInterrupt() ;
       for(std::size_t t = 0 ; t < T ; ++t ){
         i = t + n * T + m * T * N;
         idx_x = i *  D  + (Rcpp::seq_len(D) - 1);
@@ -379,10 +268,12 @@ NumericVector create_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, N
           denom += mean(dmvnorm_arma(xmat, mumat, sigma_mat, false));
         }
         denom_res[i] =  denom;
+        p.increment(); // update progress
       }
     }
   }
-  return(log(denom_res));
+  denom_res = log(denom_res);
+  return(denom_res);
 }
 
 // [[Rcpp::export]]
@@ -403,10 +294,11 @@ NumericVector create_denom_table_bytable_rcpp(NumericVector x, NumericVector mu,
   double denom = 0;
   int i;
   int j;
+  Progress p(N * M * T, true);
   // or(std::size_t i = 0 ; i < T * N * M; ++i ){
   for(std::size_t m = 0 ; m < M ; ++m ){
-    Rcpp::checkUserInterrupt();
     for(std::size_t n = 0 ; n < N ; ++n ){
+      Rcpp::checkUserInterrupt() ;
       for(std::size_t t = 0 ; t < T ; ++t ){
         i = t + n * T + m * T * N;
         idx_x = i *  D  + (Rcpp::seq_len(D) - 1);
@@ -428,10 +320,12 @@ NumericVector create_denom_table_bytable_rcpp(NumericVector x, NumericVector mu,
           }
         }
         denom_res[i] =  denom;
+        p.increment(); // update progress
       }
     }
   }
-  return(log(denom_res));
+  denom_res = log(denom_res);
+  return(denom_res);
 }
 
 // [[Rcpp::export]]
@@ -439,9 +333,10 @@ NumericVector create_weights_table_rcpp(NumericVector loglik_table, NumericVecto
   NumericVector weight_table(T * N * M);
   weight_table.attr("dim") = denom_table.attr("dim");
   weight_table = exp(loglik_table - denom_table);
-  // weight_table = weight_table/sum(weight_table);
+  weight_table = weight_table/sum(weight_table);
   return(weight_table);
 }
+
 
 // [[Rcpp::export]]
 NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T, int M){
@@ -466,7 +361,6 @@ NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, Num
     xs_curr = gen_xs_rcpp(mu_curr, sigma, D, 1, 1, M);
     loglik_curr = create_loglik_table_rcpp(lp, xs_curr, D, 1, 1, M);
     denom_curr = create_denom_table_bybox_rcpp(xs_curr, mu_curr, sigma, D, 1, 1, M);
-    weight_curr = exp(loglik_curr - denom_curr);
     bool zerotest = is_true(all(weight_curr == 0.0));
     if(zerotest) weight_curr = rep(1, weight_curr.length());
     weight_curr = weight_curr / sum(weight_curr);
@@ -491,6 +385,9 @@ NumericVector gen_mus_chain_apis_rcpp(fp_logposterior_t lp, NumericMatrix mu, Nu
   for(std::size_t n = 0 ; n < N ; ++n ){
     // Rcout << "Je bug !" << std::endl ;
     mu_curr = gen_mu_chain_apis_rcpp(lp, mu(n, _), sigma, T, M);
+    // Rcout << "********************************* " << std::endl ;
+    // Rcout << " \n " << mu_curr << std::endl ;
+    // Rcout << "*********************************"  << std::endl ;
     for(std::size_t t = 0 ; t < T ; ++t ){
       idx_res = (Rcpp::seq_len(D) - 1) + t * D + n * T * D ;
       // Rcout << "idx_res.length() : "  << idx_res.length() << std::endl ;
@@ -501,6 +398,7 @@ NumericVector gen_mus_chain_apis_rcpp(fp_logposterior_t lp, NumericMatrix mu, Nu
   }
   return(mu_chains);
 }
+
 
 // [[Rcpp::export]]
 NumericVector gen_mu_chain_pmc_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T, int M){
@@ -563,78 +461,173 @@ NumericVector gen_mus_chain_pmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, Num
   }
   return(mu_chains);
 }
+
 // You can include R code blocks in C++ files processed with sourceCpp
 // (useful for testing and development). The R code will be automatically 
 // run after the compilation.
 //
 
 /*** R
-timesTwo(42)
-lposterior2(c(1, 2))
-lposterior2(c(0, 16))
-lposterior1(c(1, 2))
-lposterior1(c(-3.017510, -8.447491))
-source(file = "../R/luca_posterior.R")
-library(mvtnorm)
-rmat <- matrix(rnorm(2*1000, sd = 5), nrow = 2)
-lp_r <- apply(rmat, 2, lposterior_1)
-lp_cpp <- apply(rmat, 2, lposterior1)
-all.equal(lp_cpp, lp_r)
-lposterior1(c(-3.017510, -8.447491))
-lposterior_1(c(-3.017510, -8.447491))
-# fptr1 <- make_GGfuncpp()
-# testfun(fptr1, c(1, 5))
-lp1 <- make_lposterior1_cpp()
-lp6 <- make_lposterior6_cpp()
-# lp2 <- make_lposterior2_cpp()
-# system.time(mh_rcpp <- simple_MH_rcpp(lp = lp1, mu = c(1, 1), sigma = c(3, 3), T = 500))
-# apply(mh_rcpp, 2, mean)
-# matplot(mh_rcpp)
-T <- 100000
-N <- 100
-sigma <- c(3, 3)
-sigma_mh <- c(3, 3)
-# mcmc_chain <- gen_chain_mcmc_rcpp(lp = lp1, mu = c(1, 1), sigma = sigma_mh, T = T)
-mus_chain <- gen_mus_pmcmc_rcpp(lp = lp6, mu = matrix(rnorm(N * 2, sd = 10), ncol = 2, nrow = N), sigma = sigma_mh, T = T, N = N)
-# mu_chain <- gen_mu_chain_apis_rcpp(lp = lp1, mu = rnorm(2), sigma = c(3, 3), T = T, M = 5)
-# mus_chain <- gen_mus_chain_apis_rcpp(lp = lp6, mu = matrix(rnorm(N * 2, sd = 10), ncol = 2, nrow = N), sigma = c(3, 3), T = T, N = N,  M = 5)
-apply(mus_chain, 1, mean)
-plot(mus_chain[1,,], mus_chain[2,,])
-xs_chain <- gen_xs_rcpp(mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = 2)
-loglik_table <- create_loglik_table_rcpp(lp = lp6, x = xs_chain, D = 2, T = T, N = N, M = 2)
-rgl::plot3d(xs_chain[1,,,], xs_chain[2,,,], exp(loglik_table))
-# denom_table_bybox <- create_denom_table_bybox_rcpp(x = xs_chain, mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = 2)
-denom_table_byrow <- create_denom_table_byrow_rcpp(x = xs_chain, mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = 2)
-# denom_table_bytable <- create_denom_table_bytable_rcpp(x = xs_chain, mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = 2)
-weight_table <- create_weights_table_rcpp(loglik_table = loglik_table, denom_table = denom_table_byrow, T = T, N = N, M = 2)
-weight_table <- exp(loglik_table - denom_table_byrow)
-rgl::plot3d(xs_chain[1,,,], xs_chain[2,,,], weight_table)
-# weight_table <- create_weights_table_rcpp(loglik_table = loglik_table, denom_table = denom_table_bytable, T = T, N = N, M = 2)
-apply(xs_chain, 1, weighted.mean, w = weight_table / sum(weight_table))
-# library(mvtnorm)
-# source(file = "../R/simple_MH.R")
+
 # source(file = "../R/luca_posterior.R")
-# system.time(mh <- simple_MH(lposterior_1, d = 2, T = 5000, mu = c(3, 3), sigma = c(3, 3)))
-# apply(mh, 2, mean)
-# matplot(mh)
-# 
-# T <- 500
-# N <- 2
-# sigma <- c(3, 3)
-# system.time({
-#   mus_chain <- gen_mus_chain_apis_rcpp(lp = lp1, mu = matrix(c(1, 1), ncol = 2, nrow = N), sigma = sigma, T = 500, N = N,  M = 5)
-#   xs_chain <- gen_xs_rcpp(mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = 2)
-#   loglik_table <- create_loglik_table_rcpp(lp = lp1, x = xs_chain, D = 2, T = T, N = N, M = 2)
-#   denom_table_byrow <- create_denom_table_byrow_rcpp(x = xs_chain, mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = 2)
-#   weight_table <- create_weights_table_rcpp(loglik_table = loglik_table, denom_table = denom_table_byrow, T = T, N = N, M = 2)
-#   apply(xs_chain, 1, weighted.mean, w = weight_table / sum(weight_table))
-# })
-# 
-# library(devtools)
-# load_all()
-# system.time({
-#   apis_chain <- indep_apis(d = 2, N = 2, T = T, M = 2, mu = matrix(c(1, 1), ncol = 2, nrow = N) , sigma = sigma, lposterior_1, compute_denom = compute_denomtable_byrow)
-#   compute_expectation(apis_chain$x, apis_chain$w)
+library(mvtnorm)
+make_lposterior_rcpp <- function(body, ...){
+  head_cpp <- '
+    #include <Rcpp.h>
+    using namespace Rcpp;
+    typedef double (*fp_logposterior)(NumericVector x);
+    typedef XPtr<fp_logposterior> fp_logposterior_t;
+    // [[Rcpp::export]]
+    double lposterior(NumericVector x){
+  '
+  tail_cpp <- '
+    // [[Rcpp::export]]
+    fp_logposterior_t make_lposterior_cpp(){
+      return fp_logposterior_t(new fp_logposterior(lposterior));
+    }
+  '
+  code <- paste(head_cpp, body, tail_cpp, sep = "\n")
+  print(code)
+  env_cpp <- function(...){
+    Rcpp::sourceCpp(code = code, env = environment(), ...)
+    list(fun = lposterior, pointer = make_lposterior_cpp())
+  }
+  env_cpp()
+}
+
+# logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
+body_lp6 <- '
+    double x1 = x[0];
+    double x2 = x[1];
+    double logtarget = -1.0/32 * pow(4 - 10 * x1 - pow(x2, 2), 2) - pow(x1, 2)/50 - pow(x2, 2)/50;
+    return logtarget;
+    }
+  '  
+lp6 <- make_lposterior_rcpp(body = body_lp6)
+
+x = seq(-7, 2, by = 0.1)
+y = seq(-5, 5, by = 0.1)
+xy = expand.grid(x, y)
+lp_xy <- exp(apply(xy, 1, lp6$fun))
+lp_xy <- exp(apply(xy, 1, lposterior_6))
+rgl::plot3d(xy[, 1], xy[, 2], lp_xy)
+
+T <- 5
+N <- 20
+M <- 5
+sigma <- c(1, 1)
+sigma_mh <- c(0.5, 0.5)
+init_mu <- lhs::randomLHS(N, 2)
+init_mu[, 1] <- init_mu[, 1] * 30 - 25
+init_mu[, 2] <- init_mu[, 2] * 15 - 7.5
+mus_chain <- gen_mus_pmcmc_rcpp(lp = lp6$pointer,
+                                mu = init_mu,
+                                sigma = sigma_mh,
+                                T = T, N = N)
+# mus_chain <- gen_mus_pmcmc_rcpp(lp = lp6$pointer, mu = matrix(c(0, 6.12), ncol = 2, nrow = N, byrow = TRUE), sigma = sigma_mh, T = T, N = N)
+apply(mus_chain, 1, mean)
+rgl::plot3d(mus_chain[1,,], mus_chain[2,,], 0)
+rgl::plot3d(1:ncol(mus_chain), mus_chain[2,,], 0)
+xs_chain <- gen_xs_rcpp(mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = M)
+loglik_table <- create_loglik_table_rcpp(lp = lp6$pointer, x = xs_chain, D = 2, T = T, N = N, M = M)
+rgl::plot3d(xs_chain[1,,,], xs_chain[2,,,], exp(loglik_table),
+            col = rainbow(100)[cut(exp(loglik_table), seq(-0.1, 1, length.out = 101))])
+denom_table <- create_denom_table_byrow_rcpp(x = xs_chain, mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = M)
+# denom_table <- create_denom_table_bytable_rcpp(x = xs_chain, mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = M)
+# weight_table <- create_weights_table_rcpp(loglik_table = loglik_table, denom_table = denom_table, T = T, N = N, M = M)
+create_weights_table <- function(loglik_table, denom_table){
+  denom_table[is.infinite(denom_table) & denom_table < 0] <- min(denom_table[is.finite(denom_table) & denom_table < 0])
+  weight_table <- exp(loglik_table - denom_table)
+  weight_table[is.infinite(weight_table)] <- max(weight_table[is.finite(weight_table)]) + 1
+  weight_table <- weight_table / max(weight_table)
+  weight_table <- weight_table / sum(weight_table)
+  if(median(weight_table) == 0){
+    warning("A majority of weights are equal to zero \n
+            => could be preferable to modify the sigma parameter of gen_xs_rcpp")
+  }
+  return(weight_table)
+}
+weight_table <- create_weights_table(loglik_table = loglik_table, denom_table = denom_table)
+summary(weight_table)
+sqrt_wtable <- sqrt(weight_table)
+rgl::plot3d(xs_chain[1,,,], xs_chain[2,,,], sqrt_wtable
+            , col = rainbow(100)[cut(sqrt_wtable, seq(min(sqrt_wtable) , max(sqrt_wtable), length.out = 101))])
+# theorical value ~ c(0.0 1.09)
+apply(xs_chain, 1, weighted.mean, w = weight_table / sum(weight_table))
+run_onmoretime <- function(){
+  T <- 5000
+  N <- 20
+  M <- 10
+  sigma <- c(1, 6)
+  sigma_mh <- c(0.15, 1)
+  init_mu <- lhs::randomLHS(N, 2)
+  init_mu[, 1] <- init_mu[, 1] * 30 - 25
+  init_mu[, 2] <- init_mu[, 2] * 15 - 7.5
+  mus_chain <- gen_mus_pmcmc_rcpp(lp = lp6$pointer,
+                                  mu = init_mu,
+                                  sigma = sigma_mh,
+                                  T = T, N = N)
+  xs_chain <- gen_xs_rcpp(mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = M)
+  loglik_table <- create_loglik_table_rcpp(lp = lp6$pointer, x = xs_chain, D = 2, T = T, N = N, M = M)
+  denom_table <- create_denom_table_byrow_rcpp(x = xs_chain, mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = M)
+  weight_table <- create_weights_table(loglik_table = loglik_table, denom_table = denom_table)
+  apply(xs_chain, 1, weighted.mean, w = weight_table / sum(weight_table))
+}
+# lotofestimates <- sapply(1:100, function(i){
+#   cat(i, "...")
+#   run_onmoretime()
 # })
 
+# APIS
+T <- 1000
+N <- 100
+M <- 5
+sigma <- c(sqrt(3), sqrt(3))
+init_mu <- lhs::randomLHS(N, 2)
+init_mu[, 1] <- init_mu[, 1] * 30 - 25
+init_mu[, 2] <- init_mu[, 2] * 15 - 7.5
+mus_chain <- gen_mus_chain_apis_rcpp(lp = lp6$pointer,
+                                     mu = init_mu,
+                                     sigma = sigma,
+                                     T = T, N = N, M = M)
+rgl::plot3d(mus_chain[1,,], mus_chain[2,,], 0)
+rgl::plot3d(1:ncol(mus_chain), mus_chain[2,,], 0)
+xs_chain <- gen_xs_rcpp(mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = M)
+loglik_table <- create_loglik_table_rcpp(lp = lp6$pointer, x = xs_chain, D = 2, T = T, N = N, M = M)
+rgl::plot3d(xs_chain[1,,,], xs_chain[2,,,], exp(loglik_table),
+            col = rainbow(100)[cut(exp(loglik_table), seq(-0.1, 1, length.out = 101))])
+denom_table <- create_denom_table_byrow_rcpp(x = xs_chain, mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = M)
+weight_table <- create_weights_table(loglik_table = loglik_table, denom_table = denom_table)
+sqrt_wtable <- sqrt(weight_table)
+rgl::plot3d(xs_chain[1,,,], xs_chain[2,,,], sqrt_wtable
+            , col = rainbow(100)[cut(sqrt_wtable, seq(min(sqrt_wtable) , max(sqrt_wtable), length.out = 101))])
+# theorical value ~ c(0.0 1.09)
+apply(xs_chain, 1, weighted.mean, w = weight_table / sum(weight_table))
+                                    
+
+# PMC
+T <- 1000
+N <- 100
+M <- 5
+sigma <- c(sqrt(3), sqrt(3))
+init_mu <- lhs::randomLHS(N, 2)
+init_mu[, 1] <- init_mu[, 1] * 30 - 25
+init_mu[, 2] <- init_mu[, 2] * 15 - 7.5
+mus_chain <- gen_mus_chain_pmc_rcpp(lp = lp6$pointer,
+                                     mu = init_mu,
+                                     sigma = sigma,
+                                     T = T, N = N, M = M)
+rgl::plot3d(mus_chain[1,,], mus_chain[2,,], 0)
+rgl::plot3d(1:ncol(mus_chain), mus_chain[2,,], 0)
+xs_chain <- gen_xs_rcpp(mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = M)
+loglik_table <- create_loglik_table_rcpp(lp = lp6$pointer, x = xs_chain, D = 2, T = T, N = N, M = M)
+rgl::plot3d(xs_chain[1,,,], xs_chain[2,,,], exp(loglik_table),
+            col = rainbow(100)[cut(exp(loglik_table), seq(-0.1, 1, length.out = 101))])
+denom_table <- create_denom_table_byrow_rcpp(x = xs_chain, mu = mus_chain, sigma = sigma, D = 2, T = T, N = N, M = M)
+weight_table <- create_weights_table(loglik_table = loglik_table, denom_table = denom_table)
+sqrt_wtable <- sqrt(weight_table)
+rgl::plot3d(xs_chain[1,,,], xs_chain[2,,,], sqrt_wtable
+            , col = rainbow(100)[cut(sqrt_wtable, seq(min(sqrt_wtable) , max(sqrt_wtable), length.out = 101))])
+# theorical value ~ c(0.0 1.09)
+apply(xs_chain, 1, weighted.mean, w = weight_table / sum(weight_table))
 */

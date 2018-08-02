@@ -1,5 +1,5 @@
 library(devtools)
-devtools::load_all("AISamplR/")
+devtools::load_all()
 mu <- 1:2
 sigma <- 1:2
 # sigma <- rep(0.001, 2)
@@ -24,17 +24,20 @@ xmat <- xarr4d_tomatrix(mcmc_pchain$x)
 xmat <- xarr4d_tomatrix(pmc_pchain$x)
 xmat <- xarr4d_tomatrix(apis_pchain$x)
 
-lais_chain <- lais(d = 2, N = 200, T = 1000, M = 10, mu = rnorm(40, sd = 5), sigma = rep(sqrt(13), 2), lposterior_1, sigma_mh = rep(5, 2), compute_denom = compute_denomtable_byrow)
+N <- 100
+T <- 10000
+d <- 2
+lais_chain <- lais(d = d, N = N, T = T, M = 2, mu = rnorm(N * T * d, sd = 10), sigma = rep(sqrt(3), d), lposterior_1, sigma_mh = rep(1, d), compute_denom = compute_denomtable_byrow)
 compute_expectation(lais_chain$x, lais_chain$w)
 compute_expectation(lais_chain$x, lais_chain$pi)
 
-pmc_chain <- indep_pmc(d = 2, N = 2, T = 100, M = 10, mu = rnorm(4, sd = 5) , sigma = rep(sqrt(13), 2), lposterior_1, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE)
-pmc_chain <- pmc(d = 2, N = 2, T = 100, M = 10, mu = rnorm(4, sd = 5) , sigma = rep(sqrt(13), 2), lposterior_1, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE)
+pmc_chain <- indep_pmc(d = d, N = N, T = T, M = 2, mu = rnorm(N * T * d, sd = 10) , sigma = rep(sqrt(3), d), lposterior_1, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE)
+# pmc_chain <- pmc(d = d, N = N, T = T, M = 2, mu = rnorm(N * T * d, sd = 10) , sigma = rep(sqrt(13), d), lposterior_1, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE)
 compute_expectation(pmc_chain$x, pmc_chain$w)
 compute_expectation(pmc_chain$x, pmc_chain$pi)
 
-apis_chain <- indep_apis(d = 2, N = 2, T = 100, M = 5, mu = rnorm(200, sd = 5) , sigma = rep(sqrt(13), 2), lposterior_2, compute_denom = compute_denomtable_byrow)
-apis_chain <- apis(d = 2, N = 2, T = 100, M = 5, mu = rnorm(4, sd = 5) , sigma = rep(sqrt(13), 2), lposterior_2, compute_denom = compute_denomtable_byrow)
+apis_chain <- indep_apis(d = d, N = N, T = T, M = 2, mu = rnorm(N * T * d, sd = 10) , sigma = rep(sqrt(3), d), lposterior_1, compute_denom = compute_denomtable_byrow)
+# apis_chain <- apis(d = d, N = N, T = T, M = 2, mu = rnorm(N * T * d, sd = 10) , sigma = rep(sqrt(3), d), lposterior_2, compute_denom = compute_denomtable_byrow)
 compute_expectation(apis_chain$x, apis_chain$w)
 compute_expectation(apis_chain$x, apis_chain$pi)
 # draw_proposals <- function(x, mu, sigma, M = 1){

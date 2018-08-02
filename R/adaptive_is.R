@@ -1,11 +1,12 @@
 compute_nextmu_apis <- function(xmat, weights){
   #apply(sweep(xmat, 2, weights, "*"), 1, sum)
+  if(any(is.na(weights))) stop("some weights are NA")
   apply(xmat, 1, weighted.mean, w = weights)
 }
 
 compute_nextmu_pmc <- function(xmat, weights){
-  if(any(is.na(weights))) browser()
-  xmat[, rmultinom(1, 1, weights)]
+  if(any(is.na(weights))) stop("some weights are NA")
+  xmat[, as.logical(rmultinom(1, 1, weights))]
 }
 
 # better to create a function compute_ais_weights(obj, compute_denom, reuse_weight)
@@ -17,9 +18,9 @@ compute_ais_weights <- function(pchain, sigma, compute_denom, reuse_weights){
 }
 
 create_adaptive_is <- function(parallel_chain){
-  adaptive_is <- function(logposterior, d, N = 10, T = 100, M = 2, mu, sigma, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE, ...){
+  adaptive_is <- function(logposterior, d, N = 10, T = 100, M = 2, mu, sigma, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE){
     pchain <- parallel_chain(d = d, N = N, T = T, M = M, mu = mu, sigma = sigma, logposterior = logposterior)
-   compute_ais_weights(pchain, sigma, compute_denom, reuse_weights)
+    compute_ais_weights(pchain, sigma, compute_denom, reuse_weights)
   }
 }
 
@@ -40,27 +41,25 @@ create_adaptive_is <- function(parallel_chain){
 #' @param sigma_mh A numerical vector of length d indicating the standard deviation to be used for each dimension of the proposal used in the MH step (only for the lais function). By default, it is equal to sigma.
 #' @param compute_denom A function that indicates how to compute denominators used to compute the weights. By default, compute_denomtable_byrow is used where the denominator for one drawn sample x_t,m,n is computed as mixture of the N proposals at time t.
 #' @param reuse_weights a boolean indicating whether to reuse the weight computed in the adaptive steps for the importance sampling step. For lais, the weight in the a
-#' @return mu A numerical matrix of dimensionyy d x N used to initialized the location parameters of the N proposal chains.
-#'
-#'   will be an integer. If integer overflow
-#'   \url{http://en.wikipedia.org/wiki/Integer_overflow} occurs, the output
-#'   will be NA with a warning. Otherwise it will be a length-one numeric or
-#'   complex vector.
-#'
-#'   Zero-length vectors have sum 0 by definition. See
-#'   \url{http://en.wikipedia.org/wiki/Empty_sum} for more details.
+#' @return a list with the following elements. 
+##' \itemize{
+##'  \item{"x"}{an array of dimension T x d x M x N containing the samples drawn from LAIS.}
+##'  \item{"mu"}{an array of dimension T x d x N containing the location parameters of the poposal distribution used in the importance sampling step.}
+##'  \item{"weights"}{an array of dimension T x M x N containing the unormalized weights associated with the samples in x.}
+##'  \item{"pi"}{an array of dimension T x M x N the loglikelihood evaluated for each sample drawn in x.} 
+##'  \item{"denom"}{an array of dimension T x M x N the denominators of the weight for each sample drawn in x.} 
+##'  \item{"marglik"}{an estimation of the marginal likelihood.}
+##' }
 #' @examples
-#' sum(1:10)
-#' sum(1:5, 6:10)
-#' sum(F, F, F, T, T)
-#'
-#' sum(.Machine$integer.max, 1L)
-#' sum(.Machine$integer.max, 1)
-#'
+#' # draw samples from the distribution defined by the loglikelihood lposterior_3 which is a mixture of two gaussians of dimension 2.
+#' lais_chain <- lais(logposterior = lposterior_3  d = 2, N = 20, T = 100, M = 5, mu = rnorm(40, sd = 5), sigma = rep(sqrt(13), 2), sigma_mh = rep(5, 2), compute_denom = compute_denomtable_byrow)
+#' # estimate the expected value of the distribution given by lposterior_3 (the real expected value is [2.5, 8]
+#' compute_expectation(lais_chain$x, lais_chain$w)
 #' \dontrun{
-#' sum("a")
+#' # Similar example with a mixture of 5 gaussians. the real expected value is [1.6, 1.4]
+#' lais_chain <- lais(logposterior = lposterior_1,  d = 2, N = 100, T = 100, M = 10, mu = rnorm(100, sd = 5), sigma = rep(sqrt(13), 2), sigma_mh = rep(5, 2), compute_denom = compute_denomtable_byrow)
+#' compute_expectation(lais_chain$x, lais_chain$w)
 #' }
-lais <- create_adaptive_is(indep_chains_mcmc)
 lais <- function(logposterior, d, N = 10, T = 100, M = 2, mu, sigma, sigma_mh = sigma, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE){
     pchain <- indep_chains_mcmc(logposterior = logposterior, d = d, N = N, T = T, M = M, mu = mu, sigma = sigma, sigma_mh = sigma_mh)
     compute_ais_weights(pchain, sigma, compute_denom, reuse_weights = FALSE)
