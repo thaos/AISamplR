@@ -21,7 +21,9 @@ create_gen_mu_chain <- function(compute_nextmu){
     pi_res[1, ] <- eval_logposterior(x_res[, 1,], logposterior)
     denom_res[1, ] <- log(eval_proposals(x_res[, 1,], mu, sigma2))
     for(t in seq.int(T)[-1]){
-      weights <- normalize_weights(compute_weights(pi_res[t-1, ], denom_res[t-1, ]))
+      weights <- normalize_weights(
+        compute_weight_table(pi_res[t-1, ], denom_res[t-1, ])
+      )
       mu_res[, t] <- compute_nextmu(x_res[, t-1,], weights)
       x_res[,t ,] <- draw_proposals(n = M, mu_res[, t], sigma2)
       pi_res[t, ] <- eval_logposterior(x_res[, t,], logposterior)

@@ -2,6 +2,12 @@
 #include <RcppArmadillo.h>
 #include "AISamplR_types.h"
 
+#include <algorithm>    // std::min
+
+// [[Rcpp::depends(RcppProgress)]]
+#include <progress.hpp>
+#include <progress_bar.hpp>
+
 using namespace Rcpp;
 
 const double log2pi = std::log(2.0 * M_PI);
@@ -72,26 +78,6 @@ NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVect
     }
   } 
   return x;
-}
-
-// [[Rcpp::export]]
-NumericVector gen_mu_chains_mcmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma2, int T = 100, int N = 2){
-  int D = mu.ncol();
-  if(D != sigma2.length()) stop("different dimension for sigma2 and mu");
-  if(N != mu.nrow()) stop("different dimension for N and mu.nrow()");
-  NumericVector mus_res(D * T * N);
-  mus_res.attr("dim") = IntegerVector::create(D, T, N);
-  int idx_start; 
-  int idx_end;
-  IntegerVector idx;
-  for(std::size_t n = 0 ; n < N ; ++n ){
-    idx_start = n * D * T;
-    idx_end = (n + 1) * T * D - 1;
-    idx = seq_len(idx_end - idx_start + 1 ) - 1 + idx_start;
-    // Rcout << "idx : "  << idx <<std::endl ;
-    mus_res[idx] =  simple_MH_rcpp(lp, mu(n, _), sigma2, T);
-  }  
-  return(mus_res);
 }
 
 // [[Rcpp::export]]
@@ -188,7 +174,7 @@ NumericVector compute_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, 
   double denom = 0;
   int i;
   int j;
-  // or(std::size_t i = 0 ; i < T * N * M; ++i ){
+  Progress p(N * M * T, true);
   for(std::size_t m = 0 ; m < M ; ++m ){
     for(std::size_t n = 0 ; n < N ; ++n ){
       Rcpp::checkUserInterrupt() ;
@@ -211,6 +197,7 @@ NumericVector compute_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, 
           denom += mean(dmvnorm_arma(xmat, mumat, sigma_mat, false));
         }
         denom_res[i] =  denom;
+        p.increment(); // update progress
       }
     }
   }
@@ -236,7 +223,7 @@ NumericVector compute_denom_table_bytable_rcpp(NumericVector x, NumericVector mu
   double denom = 0;
   int i;
   int j;
-  // or(std::size_t i = 0 ; i < T * N * M; ++i ){
+  Progress p(N * M * T, true);
   for(std::size_t m = 0 ; m < M ; ++m ){
     for(std::size_t n = 0 ; n < N ; ++n ){
       Rcpp::checkUserInterrupt() ;
@@ -261,22 +248,13 @@ NumericVector compute_denom_table_bytable_rcpp(NumericVector x, NumericVector mu
           }
         }
         denom_res[i] =  denom;
+        p.increment(); // update progress
       }
     }
   }
   denom_res = log(denom_res);
   return(denom_res);
 }
-
-// [[Rcpp::export]]
-NumericVector compute_weight_table_rcpp(NumericVector loglik_table, NumericVector denom_table, int T,  int N, int M){
-  NumericVector weight_table(T * N * M);
-  weight_table.attr("dim") = denom_table.attr("dim");
-  weight_table = exp(loglik_table - denom_table);
-  weight_table = weight_table/sum(weight_table);
-  return(weight_table);
-}
-
 
 // [[Rcpp::export]]
 NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma2, int T, int M){
@@ -312,31 +290,6 @@ NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, Num
     }
   }
   return(mu_chain); 
-}
-
-// [[Rcpp::export]]
-NumericVector gen_mu_chains_apis_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma2, int T, int N, int M){
-  int D = mu.ncol();
-  NumericVector mu_chains(D * T * N);
-  mu_chains.attr("dim") = IntegerVector::create(D, T, N);
-  NumericVector mu_curr(D * T);
-  IntegerVector idx_res;
-  IntegerVector idx_curr;
-  for(std::size_t n = 0 ; n < N ; ++n ){
-    // Rcout << "Je bug !" << std::endl ;
-    mu_curr = gen_mu_chain_apis_rcpp(lp, mu(n, _), sigma2, T, M);
-    // Rcout << "********************************* " << std::endl ;
-    // Rcout << " \n " << mu_curr << std::endl ;
-    // Rcout << "*********************************"  << std::endl ;
-    for(std::size_t t = 0 ; t < T ; ++t ){
-      idx_res = (Rcpp::seq_len(D) - 1) + t * D + n * T * D ;
-      // Rcout << "idx_res.length() : "  << idx_res.length() << std::endl ;
-      idx_curr = (Rcpp::seq_len(D) - 1) + t * D;
-      // Rcout << "idx_curr.length() : "  << idx_curr.length() << std::endl ;
-      mu_chains[idx_res] = mu_curr[idx_curr];
-    }
-  }
-  return(mu_chains);
 }
 
 
@@ -380,24 +333,3 @@ NumericVector gen_mu_chain_pmc_rcpp(fp_logposterior_t lp, NumericVector mu, Nume
   return(mu_chain); 
 }
 
-// [[Rcpp::export]]
-NumericVector gen_mu_chains_pmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma2, int T, int N, int M){
-  int D = mu.ncol();
-  NumericVector mu_chains(D * T * N);
-  mu_chains.attr("dim") = IntegerVector::create(D, T, N);
-  NumericVector mu_curr(D * T);
-  IntegerVector idx_res;
-  IntegerVector idx_curr;
-  for(std::size_t n = 0 ; n < N ; ++n ){
-    // Rcout << "Je bug !" << std::endl ;
-    mu_curr = gen_mu_chain_pmc_rcpp(lp, mu(n, _), sigma2, T, M);
-    for(std::size_t t = 0 ; t < T ; ++t ){
-      idx_res = (Rcpp::seq_len(D) - 1) + t * D + n * T * D ;
-      // Rcout << "idx_res.length() : "  << idx_res.length() << std::endl ;
-      idx_curr = (Rcpp::seq_len(D) - 1) + t * D;
-      // Rcout << "idx_curr.length() : "  << idx_curr.length() << std::endl ;
-      mu_chains[idx_res] = mu_curr[idx_curr];
-    }
-  }
-  return(mu_chains);
-}

@@ -17,10 +17,6 @@ simple_MH_rcpp <- function(lp, mu, sigma2, T = 100L) {
     .Call(`_AISamplR_simple_MH_rcpp`, lp, mu, sigma2, T)
 }
 
-gen_mu_chains_mcmc_rcpp <- function(lp, mu, sigma2, T = 100L, N = 2L) {
-    .Call(`_AISamplR_gen_mu_chains_mcmc_rcpp`, lp, mu, sigma2, T, N)
-}
-
 gen_xs_rcpp <- function(mu, sigma2, D, T, N, M) {
     .Call(`_AISamplR_gen_xs_rcpp`, mu, sigma2, D, T, N, M)
 }
@@ -41,24 +37,12 @@ compute_denom_table_bytable_rcpp <- function(x, mu, sigma2, D, T, N, M) {
     .Call(`_AISamplR_compute_denom_table_bytable_rcpp`, x, mu, sigma2, D, T, N, M)
 }
 
-compute_weight_table_rcpp <- function(loglik_table, denom_table, T, N, M) {
-    .Call(`_AISamplR_compute_weight_table_rcpp`, loglik_table, denom_table, T, N, M)
-}
-
 gen_mu_chain_apis_rcpp <- function(lp, mu, sigma2, T, M) {
     .Call(`_AISamplR_gen_mu_chain_apis_rcpp`, lp, mu, sigma2, T, M)
 }
 
-gen_mu_chains_apis_rcpp <- function(lp, mu, sigma2, T, N, M) {
-    .Call(`_AISamplR_gen_mu_chains_apis_rcpp`, lp, mu, sigma2, T, N, M)
-}
-
 gen_mu_chain_pmc_rcpp <- function(lp, mu, sigma2, T, M) {
     .Call(`_AISamplR_gen_mu_chain_pmc_rcpp`, lp, mu, sigma2, T, M)
-}
-
-gen_mu_chains_pmc_rcpp <- function(lp, mu, sigma2, T, N, M) {
-    .Call(`_AISamplR_gen_mu_chains_pmc_rcpp`, lp, mu, sigma2, T, N, M)
 }
 
 rcpp_hello_world <- function() {

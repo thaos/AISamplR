@@ -2,20 +2,37 @@
 compute_weight_table <- 
   function(loglik_table, denom_table)
   {
-    denom_table[is.infinite(denom_table) & denom_table < 0] <-
-      min(denom_table[is.finite(denom_table) & denom_table < 0])
+    if(any(is.infinite(denom_table))){
+      denom_table[is.infinite(denom_table) & denom_table < 0] <-
+        min(denom_table[is.finite(denom_table) & denom_table < 0])
+      warning("some negative infinite denominators: \n
+              replacing by minimmum finite denoninator")
+    }
     weight_table <- exp(loglik_table - denom_table)
-    weight_table[is.infinite(weight_table)] <-
-      max(weight_table[is.finite(weight_table)]) + 1
-    weight_table <- weight_table / max(weight_table)
-    weight_table <- weight_table / sum(weight_table)
-    if(median(weight_table) == 0){
-      warning("A majority of weights are equal to zero \n
-              => could be preferable to modify the sigma parameter of gen_xs_rcpp")
+    if(any(is.infinite(weight_table))){
+      weight_table[is.infinite(weight_table)] <-
+        max(weight_table[is.finite(weight_table)]) + 1
+      warning("some infinite weights: \n
+              replacing by maximum finite weight + 1")
     }
     return(weight_table)
   }
 
+normalize_weights <- function(weights){
+  if(all(weights == 0)){
+    weights <- rep(1, length(weights))
+    warning("all weights are zero, replaced by equiprobable weights")
+  }
+  weights / sum(weights)
+  weights <- weights / max(weights)
+  weights <- weights / sum(weights)
+  if(median(weights) == 0){
+    warning("A majority of weights are equal to zero \n
+            => could be preferable to modify
+            the sigma parameter of the proposal")
+  }
+  return(weights)
+}
 compute_loglik_table <-
   function(logposterior, xs_chain, D, T, N, M)
   {

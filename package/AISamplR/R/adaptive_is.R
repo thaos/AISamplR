@@ -50,7 +50,8 @@ create_adaptive_is <- function(gen_mu_chains){
       importance_sampling(logposterior = logposterior,
                           mu_chains = mu_chains,
                           sigma2 = sig2_prop,
-                          compute_denom_table = compute_denom_table)
+                          compute_denom_table = compute_denom_table,
+                          T = T, N = N, M = M)
     ais_res <- c(list("mu" = mu_chains), is_step)
     return(ais_res)
   }
@@ -72,7 +73,8 @@ lais <- function(logposterior,
     importance_sampling(logposterior = logposterior,
                         mu_chains = mu_chains,
                         sigma2 = sig2_prop,
-                        compute_denom_table = compute_denom_table)
+                        compute_denom_table = compute_denom_table,
+                        T = T, N = N, M = M)
   ais_res <- c(list("mu" = mu_chains), is_step)
   return(ais_res)
 }
@@ -92,6 +94,7 @@ importance_sampling <-
       compute_loglik_table(logposterior = logposterior,
                            x = xs_chain,
                            D = D, T = T, N = N, M = M)
+    message("Computing denominator table:"
     denom_table <-
       compute_denom_table(x = xs_chain,
                          mu = mu_chains,
