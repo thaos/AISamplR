@@ -13,6 +13,54 @@ rmvnorm_arma <- function(n, mu, sigma) {
     .Call(`_AISamplR_rmvnorm_arma`, n, mu, sigma)
 }
 
+simple_MH_rcpp <- function(lp, mu, sigma, T = 100L) {
+    .Call(`_AISamplR_simple_MH_rcpp`, lp, mu, sigma, T)
+}
+
+gen_mu_chains_mcmc_rcpp <- function(lp, mu, sigma, T = 100L, N = 2L) {
+    .Call(`_AISamplR_gen_mu_chains_mcmc_rcpp`, lp, mu, sigma, T, N)
+}
+
+gen_xs_rcpp <- function(mu, sigma, D, T, N, M) {
+    .Call(`_AISamplR_gen_xs_rcpp`, mu, sigma, D, T, N, M)
+}
+
+create_loglik_table_rcpp <- function(lp, x, D, T, N, M) {
+    .Call(`_AISamplR_create_loglik_table_rcpp`, lp, x, D, T, N, M)
+}
+
+create_denom_table_bybox_rcpp <- function(x, mu, sigma, D, T, N, M) {
+    .Call(`_AISamplR_create_denom_table_bybox_rcpp`, x, mu, sigma, D, T, N, M)
+}
+
+create_denom_table_byrow_rcpp <- function(x, mu, sigma, D, T, N, M) {
+    .Call(`_AISamplR_create_denom_table_byrow_rcpp`, x, mu, sigma, D, T, N, M)
+}
+
+create_denom_table_bytable_rcpp <- function(x, mu, sigma, D, T, N, M) {
+    .Call(`_AISamplR_create_denom_table_bytable_rcpp`, x, mu, sigma, D, T, N, M)
+}
+
+create_weight_table_rcpp <- function(loglik_table, denom_table, T, N, M) {
+    .Call(`_AISamplR_create_weight_table_rcpp`, loglik_table, denom_table, T, N, M)
+}
+
+gen_mu_chain_apis_rcpp <- function(lp, mu, sigma, T, M) {
+    .Call(`_AISamplR_gen_mu_chain_apis_rcpp`, lp, mu, sigma, T, M)
+}
+
+gen_mu_chains_apis_rcpp <- function(lp, mu, sigma, T, N, M) {
+    .Call(`_AISamplR_gen_mu_chains_apis_rcpp`, lp, mu, sigma, T, N, M)
+}
+
+gen_mu_chain_pmc_rcpp <- function(lp, mu, sigma, T, M) {
+    .Call(`_AISamplR_gen_mu_chain_pmc_rcpp`, lp, mu, sigma, T, M)
+}
+
+gen_mu_chains_pmc_rcpp <- function(lp, mu, sigma, T, N, M) {
+    .Call(`_AISamplR_gen_mu_chains_pmc_rcpp`, lp, mu, sigma, T, N, M)
+}
+
 rcpp_hello_world <- function() {
     .Call(`_AISamplR_rcpp_hello_world`)
 }

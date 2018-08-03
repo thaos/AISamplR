@@ -5,13 +5,13 @@ simple_MH <- function(logposterior, mu, sigma, T = 100){
 simple_MH.function <- function(logposterior, mu, sigma, T = 100){
   if(length(mu) != length(sigma)) stop("length(mu) != length(sigma)")
   D <- length(mu)
-  x <- matrix(0, nrow = T, ncol = D)
-  x[1, ] <- mu
-  proposition  <- rnorm(D, mean = x[1, ], sd = sigma)
+  x <- matrix(0, nrow = D, ncol = T)
+  x[, 1] <- mu
+  proposition  <- rnorm(D, mean = x[, 1], sd = sigma)
   if(length(mu) != length(proposition)) stop("length(mu) != length(proposition)")
-  prev_lposterior <- logposterior(x[1, ])
+  prev_lposterior <- logposterior(x[, 1])
   for (i in 2:T){
-    proposition  <- rnorm(D, mean = x[i-1, ], sd = sigma)
+    proposition  <- rnorm(D, mean = x[, i-1], sd = sigma)
     #acceptance prob
     cur_lposterior <- logposterior(proposition)
     rho <- exp(cur_lposterior - prev_lposterior)
@@ -19,10 +19,10 @@ simple_MH.function <- function(logposterior, mu, sigma, T = 100){
     # MH TEST
     u <- runif(1)
     if (u <= alpha){
-      x[i, ] <- proposition
+      x[, i] <- proposition
       prev_lposterior <- cur_lposterior
     } else{
-      x[i, ] <- x[i-1, ]
+      x[, i] <- x[, i-1]
     }
   }
   return(x)

@@ -1,28 +1,3 @@
-compute_nextmu_apis <- function(xmat, weights){
-  #apply(sweep(xmat, 2, weights, "*"), 1, sum)
-  if(any(is.na(weights))) stop("some weights are NA")
-  apply(xmat, 1, weighted.mean, w = weights)
-}
-
-compute_nextmu_pmc <- function(xmat, weights){
-  if(any(is.na(weights))) stop("some weights are NA")
-  xmat[, as.logical(rmultinom(1, 1, weights))]
-}
-
-# better to create a function compute_ais_weights(obj, compute_denom, reuse_weight)
-compute_ais_weights <- function(pchain, sigma, compute_denom, reuse_weights){
-  if(reuse_weights & !is.null(pchain$denom)) denom_arr <- pchain$denom
-  else denom_arr <- compute_denom(pchain$x, pchain$mu, sigma)
-  weights <- compute_weights(pchain$pi, denom_arr)
-  list(x = pchain$x, mu = pchain$mu, w = weights, pi = pchain$pi, denom = denom_arr, marglik = mean(weights))
-}
-
-create_adaptive_is <- function(parallel_chain){
-  adaptive_is <- function(logposterior, d, N = 10, T = 100, M = 2, mu, sigma, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE){
-    pchain <- parallel_chain(d = d, N = N, T = T, M = M, mu = mu, sigma = sigma, logposterior = logposterior)
-    compute_ais_weights(pchain, sigma, compute_denom, reuse_weights)
-  }
-}
 
 #' @export
 #' Layered Adaptive Importance Sampling (LAIS).
@@ -64,9 +39,14 @@ lais <- function(logposterior, d, N = 10, T = 100, M = 2, mu, sigma, sigma_mh = 
     pchain <- indep_chains_mcmc(logposterior = logposterior, d = d, N = N, T = T, M = M, mu = mu, sigma = sigma, sigma_mh = sigma_mh)
     compute_ais_weights(pchain, sigma, compute_denom, reuse_weights = FALSE)
 }
+
+create_adaptive_is <- function(parallel_chain){
+  adaptive_is <- function(logposterior, d, N = 10, T = 100, M = 2, mu, sigma, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE){
+    pchain <- parallel_chain(d = d, N = N, T = T, M = M, mu = mu, sigma = sigma, logposterior = logposterior)
+    compute_ais_weights(pchain, sigma, compute_denom, reuse_weights)
+  }
+}
 indep_apis <- create_adaptive_is(indep_chains_apis)
 indep_pmc <- create_adaptive_is(indep_chains_pmc)
-apis <- create_adaptive_is(fchain_apis )
-pmc <- create_adaptive_is(fchain_pmc)
 
 

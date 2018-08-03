@@ -41,34 +41,34 @@ arma::mat rmvnorm_arma(int n, arma::vec mu, arma::mat sigma) {
 
 // [[Rcpp::export]]
 NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T = 100){
-  Rcout << "simple_MH called \n";
+  //Rcout << "simple_MH called \n";
   if(mu.length() != sigma.length()) stop("different dimension for sigma and mu");
-  NumericMatrix x(T, mu.length());
-  x(0, _) = mu;
+  NumericMatrix x(mu.length(), T);
+  x(_, 0) = mu;
   arma::mat sigma_mat(mu.length(), mu.length(), arma::fill::zeros);
   for(std::size_t i = 0 ; i < mu.length() ; ++i ){
     sigma_mat(i, i) = sigma(i); 
   }
   // Rcout << "sigma_mat : "  << sigma_mat << std::endl ;
   NumericVector proposition;
-  double prev_lposterior = (*lp)(x(0, _));
+  double prev_lposterior = (*lp)(x(_, 0));
   double cur_lposterior;
   double rho;
   double alpha;
   double u;
   for(std::size_t i = 1 ; i < T ; ++i ){
-    // Rcout << "x : " << x(i - 1, 0) << " ; "<< x(i - 1 , 1) << std::endl;
-    proposition = as<NumericVector>(wrap(rmvnorm_arma(1, x(i - 1, _), sigma_mat)));
+    // Rcout << "x : " << x(0, i - 1) << " ; "<< x(1, i - 1) << std::endl;
+    proposition = as<NumericVector>(wrap(rmvnorm_arma(1, x(_, i - 1), sigma_mat)));
     cur_lposterior = (*lp)(proposition);
     // Rcout << "proposition : "  << proposition << "; loglik : " << cur_lposterior <<std::endl ;
     rho = exp(cur_lposterior - prev_lposterior);
     alpha = std::min(1.0, rho);
     u = arma::randu();
     if (u <= alpha){
-      x(i, _) = proposition;
+      x(_, i) = proposition;
       prev_lposterior = cur_lposterior;
     } else{
-      x(i, _) = x(i-1, _);
+      x(_, i) = x(_, i-1);
     }
   } 
   return x;
@@ -89,7 +89,7 @@ NumericVector gen_mu_chains_mcmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, Nu
     idx_end = (n + 1) * T * D - 1;
     idx = seq_len(idx_end - idx_start + 1 ) - 1 + idx_start;
     // Rcout << "idx : "  << idx <<std::endl ;
-    mus_res[idx] =  transpose(simple_MH_rcpp(lp, mu(n, _), sigma, T));
+    mus_res[idx] =  simple_MH_rcpp(lp, mu(n, _), sigma, T);
   }  
   return(mus_res);
 }
@@ -269,7 +269,7 @@ NumericVector create_denom_table_bytable_rcpp(NumericVector x, NumericVector mu,
 }
 
 // [[Rcpp::export]]
-NumericVector create_weights_table_rcpp(NumericVector loglik_table, NumericVector denom_table, int T,  int N, int M){
+NumericVector create_weight_table_rcpp(NumericVector loglik_table, NumericVector denom_table, int T,  int N, int M){
   NumericVector weight_table(T * N * M);
   weight_table.attr("dim") = denom_table.attr("dim");
   weight_table = exp(loglik_table - denom_table);
@@ -401,4 +401,3 @@ NumericVector gen_mu_chains_pmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, Num
   }
   return(mu_chains);
 }
-*/
