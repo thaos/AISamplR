@@ -40,14 +40,14 @@ arma::mat rmvnorm_arma(int n, arma::vec mu, arma::mat sigma) {
 }
 
 // [[Rcpp::export]]
-NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T = 100){
+NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma2, int T = 100){
   //Rcout << "simple_MH called \n";
-  if(mu.length() != sigma.length()) stop("different dimension for sigma and mu");
+  if(mu.length() != sigma2.length()) stop("different dimension for sigma2 and mu");
   NumericMatrix x(mu.length(), T);
   x(_, 0) = mu;
   arma::mat sigma_mat(mu.length(), mu.length(), arma::fill::zeros);
   for(std::size_t i = 0 ; i < mu.length() ; ++i ){
-    sigma_mat(i, i) = sigma(i); 
+    sigma_mat(i, i) = sigma2(i); 
   }
   // Rcout << "sigma_mat : "  << sigma_mat << std::endl ;
   NumericVector proposition;
@@ -75,9 +75,9 @@ NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVect
 }
 
 // [[Rcpp::export]]
-NumericVector gen_mu_chains_mcmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma, int T = 100, int N = 2){
+NumericVector gen_mu_chains_mcmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma2, int T = 100, int N = 2){
   int D = mu.ncol();
-  if(D != sigma.length()) stop("different dimension for sigma and mu");
+  if(D != sigma2.length()) stop("different dimension for sigma2 and mu");
   if(N != mu.nrow()) stop("different dimension for N and mu.nrow()");
   NumericVector mus_res(D * T * N);
   mus_res.attr("dim") = IntegerVector::create(D, T, N);
@@ -89,13 +89,13 @@ NumericVector gen_mu_chains_mcmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, Nu
     idx_end = (n + 1) * T * D - 1;
     idx = seq_len(idx_end - idx_start + 1 ) - 1 + idx_start;
     // Rcout << "idx : "  << idx <<std::endl ;
-    mus_res[idx] =  simple_MH_rcpp(lp, mu(n, _), sigma, T);
+    mus_res[idx] =  simple_MH_rcpp(lp, mu(n, _), sigma2, T);
   }  
   return(mus_res);
 }
 
 // [[Rcpp::export]]
-NumericVector gen_xs_rcpp(NumericVector mu, NumericVector sigma, int D, int T, int N, int M){
+NumericVector gen_xs_rcpp(NumericVector mu, NumericVector sigma2, int D, int T, int N, int M){
   if(D * T * N != mu.length()) stop("D * T * N != mu.length()");
   NumericVector x_res(D * T * N * M);
   x_res.attr("dim") = IntegerVector::create(D, T, N, M);
@@ -107,7 +107,7 @@ NumericVector gen_xs_rcpp(NumericVector mu, NumericVector sigma, int D, int T, i
         for(std::size_t d = 0 ; d < D ; ++d ){
           idx_x = d + t * D +  n * D * T + m * D * T * N;
           idx_mu = d + t * D +  n * D * T;
-          x_res(idx_x) = arma::randn() * sqrt(sigma(d)) + mu(idx_mu);
+          x_res(idx_x) = arma::randn() * sqrt(sigma2(d)) + mu(idx_mu);
         }
       }
     }
@@ -116,7 +116,7 @@ NumericVector gen_xs_rcpp(NumericVector mu, NumericVector sigma, int D, int T, i
 }
 
 // [[Rcpp::export]]
-NumericVector create_loglik_table_rcpp(fp_logposterior_t lp, NumericVector x, int D, int T,  int N, int M){
+NumericVector compute_loglik_table_rcpp(fp_logposterior_t lp, NumericVector x, int D, int T,  int N, int M){
   if(D * T * N * M != x.length()) stop("D * T * N * M != x.length()");
   NumericVector loglik_res(T * N * M);
   loglik_res.attr("dim") = IntegerVector::create(T, N, M);
@@ -133,7 +133,7 @@ NumericVector create_loglik_table_rcpp(fp_logposterior_t lp, NumericVector x, in
 }
 
 // [[Rcpp::export]]
-NumericVector create_denom_table_bybox_rcpp(NumericVector x, NumericVector mu, NumericVector sigma, int D, int T,  int N, int M){
+NumericVector compute_denom_table_bybox_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T,  int N, int M){
   if(D * T * N * M != x.length()) stop("D * T * N * M != x.length()");
   NumericVector denom_res(T * N * M);
   denom_res.attr("dim") = IntegerVector::create(T, N, M);
@@ -143,9 +143,9 @@ NumericVector create_denom_table_bybox_rcpp(NumericVector x, NumericVector mu, N
   arma::rowvec mumat(D);
   NumericVector xsub(D);
   NumericVector musub(D);
-  arma::mat sigma_mat(sigma.length(), sigma.length(), arma::fill::zeros);
-  for(std::size_t i = 0 ; i < sigma.length() ; ++i ){
-    sigma_mat(i, i) = sigma(i); 
+  arma::mat sigma_mat(sigma2.length(), sigma2.length(), arma::fill::zeros);
+  for(std::size_t i = 0 ; i < sigma2.length() ; ++i ){
+    sigma_mat(i, i) = sigma2(i); 
   }
   for(std::size_t i = 0 ; i < T * N * M; ++i ){
     Rcpp::checkUserInterrupt() ;
@@ -171,13 +171,13 @@ NumericVector create_denom_table_bybox_rcpp(NumericVector x, NumericVector mu, N
 }
 
 // [[Rcpp::export]]
-NumericVector create_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, NumericVector sigma, int D, int T,  int N, int M){
+NumericVector compute_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T,  int N, int M){
   if(D * T * N * M != x.length()) stop("D * T * N * M != x.length()");
   NumericVector denom_res(T * N * M);
   denom_res.attr("dim") = IntegerVector::create(T, N, M);
-  arma::mat sigma_mat(sigma.length(), sigma.length(), arma::fill::zeros);
-  for(std::size_t i = 0 ; i < sigma.length() ; ++i ){
-    sigma_mat(i, i) = sigma(i); 
+  arma::mat sigma_mat(sigma2.length(), sigma2.length(), arma::fill::zeros);
+  for(std::size_t i = 0 ; i < sigma2.length() ; ++i ){
+    sigma_mat(i, i) = sigma2(i); 
   }
   IntegerVector idx_x;
   IntegerVector idx_mu;
@@ -219,13 +219,13 @@ NumericVector create_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, N
 }
 
 // [[Rcpp::export]]
-NumericVector create_denom_table_bytable_rcpp(NumericVector x, NumericVector mu, NumericVector sigma, int D, int T,  int N, int M){
+NumericVector compute_denom_table_bytable_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T,  int N, int M){
   if(D * T * N * M != x.length()) stop("D * T * N * M != x.length()");
   NumericVector denom_res(T * N * M);
   denom_res.attr("dim") = IntegerVector::create(T, N, M);
-  arma::mat sigma_mat(sigma.length(), sigma.length(), arma::fill::zeros);
-  for(std::size_t i = 0 ; i < sigma.length() ; ++i ){
-    sigma_mat(i, i) = sigma(i); 
+  arma::mat sigma_mat(sigma2.length(), sigma2.length(), arma::fill::zeros);
+  for(std::size_t i = 0 ; i < sigma2.length() ; ++i ){
+    sigma_mat(i, i) = sigma2(i); 
   }
   IntegerVector idx_x;
   IntegerVector idx_mu;
@@ -269,7 +269,7 @@ NumericVector create_denom_table_bytable_rcpp(NumericVector x, NumericVector mu,
 }
 
 // [[Rcpp::export]]
-NumericVector create_weight_table_rcpp(NumericVector loglik_table, NumericVector denom_table, int T,  int N, int M){
+NumericVector compute_weight_table_rcpp(NumericVector loglik_table, NumericVector denom_table, int T,  int N, int M){
   NumericVector weight_table(T * N * M);
   weight_table.attr("dim") = denom_table.attr("dim");
   weight_table = exp(loglik_table - denom_table);
@@ -279,7 +279,7 @@ NumericVector create_weight_table_rcpp(NumericVector loglik_table, NumericVector
 
 
 // [[Rcpp::export]]
-NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T, int M){
+NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma2, int T, int M){
   int D = mu.length();
   // Rcout << "D: "  << D << std::endl ;
   NumericVector mu_chain(D * T);
@@ -298,9 +298,9 @@ NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, Num
   for(std::size_t t = 0 ; t < T - 1; ++t ){
     idx_mu = t *  D  + (Rcpp::seq_len(D) - 1);
     mu_curr = mu_chain[idx_mu];
-    xs_curr = gen_xs_rcpp(mu_curr, sigma, D, 1, 1, M);
-    loglik_curr = create_loglik_table_rcpp(lp, xs_curr, D, 1, 1, M);
-    denom_curr = create_denom_table_bybox_rcpp(xs_curr, mu_curr, sigma, D, 1, 1, M);
+    xs_curr = gen_xs_rcpp(mu_curr, sigma2, D, 1, 1, M);
+    loglik_curr = compute_loglik_table_rcpp(lp, xs_curr, D, 1, 1, M);
+    denom_curr = compute_denom_table_bybox_rcpp(xs_curr, mu_curr, sigma2, D, 1, 1, M);
     bool zerotest = is_true(all(weight_curr == 0.0));
     if(zerotest) weight_curr = rep(1, weight_curr.length());
     weight_curr = weight_curr / sum(weight_curr);
@@ -315,7 +315,7 @@ NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, Num
 }
 
 // [[Rcpp::export]]
-NumericVector gen_mu_chains_apis_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma, int T, int N, int M){
+NumericVector gen_mu_chains_apis_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma2, int T, int N, int M){
   int D = mu.ncol();
   NumericVector mu_chains(D * T * N);
   mu_chains.attr("dim") = IntegerVector::create(D, T, N);
@@ -324,7 +324,7 @@ NumericVector gen_mu_chains_apis_rcpp(fp_logposterior_t lp, NumericMatrix mu, Nu
   IntegerVector idx_curr;
   for(std::size_t n = 0 ; n < N ; ++n ){
     // Rcout << "Je bug !" << std::endl ;
-    mu_curr = gen_mu_chain_apis_rcpp(lp, mu(n, _), sigma, T, M);
+    mu_curr = gen_mu_chain_apis_rcpp(lp, mu(n, _), sigma2, T, M);
     // Rcout << "********************************* " << std::endl ;
     // Rcout << " \n " << mu_curr << std::endl ;
     // Rcout << "*********************************"  << std::endl ;
@@ -341,7 +341,7 @@ NumericVector gen_mu_chains_apis_rcpp(fp_logposterior_t lp, NumericMatrix mu, Nu
 
 
 // [[Rcpp::export]]
-NumericVector gen_mu_chain_pmc_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma, int T, int M){
+NumericVector gen_mu_chain_pmc_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma2, int T, int M){
   int D = mu.length();
   // Rcout << "D: "  << D << std::endl ;
   NumericVector mu_chain(D * T);
@@ -360,9 +360,9 @@ NumericVector gen_mu_chain_pmc_rcpp(fp_logposterior_t lp, NumericVector mu, Nume
   for(std::size_t t = 0 ; t < T - 1; ++t ){
     idx_mu = t *  D  + (Rcpp::seq_len(D) - 1);
     mu_curr = mu_chain[idx_mu];
-    xs_curr = gen_xs_rcpp(mu_curr, sigma, D, 1, 1, M);
-    loglik_curr = create_loglik_table_rcpp(lp, xs_curr, D, 1, 1, M);
-    denom_curr = create_denom_table_bybox_rcpp(xs_curr, mu_curr, sigma, D, 1, 1, M);
+    xs_curr = gen_xs_rcpp(mu_curr, sigma2, D, 1, 1, M);
+    loglik_curr = compute_loglik_table_rcpp(lp, xs_curr, D, 1, 1, M);
+    denom_curr = compute_denom_table_bybox_rcpp(xs_curr, mu_curr, sigma2, D, 1, 1, M);
     weight_curr = exp(loglik_curr - denom_curr);
     bool zerotest = is_true(all(weight_curr == 0.0));
     if(zerotest) weight_curr = rep(1, weight_curr.length());
@@ -381,7 +381,7 @@ NumericVector gen_mu_chain_pmc_rcpp(fp_logposterior_t lp, NumericVector mu, Nume
 }
 
 // [[Rcpp::export]]
-NumericVector gen_mu_chains_pmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma, int T, int N, int M){
+NumericVector gen_mu_chains_pmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, NumericVector sigma2, int T, int N, int M){
   int D = mu.ncol();
   NumericVector mu_chains(D * T * N);
   mu_chains.attr("dim") = IntegerVector::create(D, T, N);
@@ -390,7 +390,7 @@ NumericVector gen_mu_chains_pmc_rcpp(fp_logposterior_t lp, NumericMatrix mu, Num
   IntegerVector idx_curr;
   for(std::size_t n = 0 ; n < N ; ++n ){
     // Rcout << "Je bug !" << std::endl ;
-    mu_curr = gen_mu_chain_pmc_rcpp(lp, mu(n, _), sigma, T, M);
+    mu_curr = gen_mu_chain_pmc_rcpp(lp, mu(n, _), sigma2, T, M);
     for(std::size_t t = 0 ; t < T ; ++t ){
       idx_res = (Rcpp::seq_len(D) - 1) + t * D + n * T * D ;
       // Rcout << "idx_res.length() : "  << idx_res.length() << std::endl ;

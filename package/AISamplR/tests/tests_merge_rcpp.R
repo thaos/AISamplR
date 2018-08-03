@@ -70,3 +70,39 @@ gen_mu_chains_apis(
                    sigma = c(1,1),
                    T = 100, N = 2, M = 2 
                    )
+
+lais(lp6$fun,
+     mu = matrix(1:4, nrow = 2, ncol = 2),
+     sig2_adapt = c(1, 1), c(1, 1),
+     compute_denom = compute_denom_table_byrow_rcpp,
+     N = 2, T = 100, M = 2)
+
+lais(lp6$pointer,
+     mu = matrix(1:4, nrow = 2, ncol = 2),
+     sig2_adapt = c(1, 1), c(1, 1),
+     compute_denom = compute_denom_table_byrow_rcpp,
+     N = 2, T = 100, M = 2)
+
+apis(lp6$fun,
+     mu = matrix(1:4, nrow = 2, ncol = 2),
+     sig2_adapt = c(1, 1), c(1, 1),
+     compute_denom = compute_denom_table_byrow_rcpp,
+     N = 2, T = 100, M = 2)
+
+apis(lp6$pointer,
+     mu = matrix(1:4, nrow = 2, ncol = 2),
+     sig2_adapt = c(1, 1), c(1, 1),
+     compute_denom = compute_denom_table_byrow_rcpp,
+     N = 2, T = 100, M = 2)
+
+pmc(lp6$fun,
+     mu = matrix(1:4, nrow = 2, ncol = 2),
+     sig2_adapt = c(1, 1), c(1, 1),
+     compute_denom = compute_denom_table_byrow_rcpp,
+     N = 2, T = 100, M = 2)
+
+pmc(lp6$pointer,
+     mu = matrix(1:4, nrow = 2, ncol = 2),
+     sig2_adapt = c(1, 1), c(1, 1),
+     compute_denom = compute_denom_table_byrow_rcpp,
+     N = 2, T = 100, M = 2)

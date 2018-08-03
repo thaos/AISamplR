@@ -35,18 +35,75 @@
 #' lais_chain <- lais(logposterior = lposterior_1,  d = 2, N = 100, T = 100, M = 10, mu = rnorm(100, sd = 5), sigma = rep(sqrt(13), 2), sigma_mh = rep(5, 2), compute_denom = compute_denomtable_byrow)
 #' compute_expectation(lais_chain$x, lais_chain$w)
 #' }
-lais <- function(logposterior, d, N = 10, T = 100, M = 2, mu, sigma, sigma_mh = sigma, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE){
-    pchain <- indep_chains_mcmc(logposterior = logposterior, d = d, N = N, T = T, M = M, mu = mu, sigma = sigma, sigma_mh = sigma_mh)
-    compute_ais_weights(pchain, sigma, compute_denom, reuse_weights = FALSE)
-}
 
-create_adaptive_is <- function(parallel_chain){
-  adaptive_is <- function(logposterior, d, N = 10, T = 100, M = 2, mu, sigma, compute_denom = compute_denomtable_byrow, reuse_weights = FALSE){
-    pchain <- parallel_chain(d = d, N = N, T = T, M = M, mu = mu, sigma = sigma, logposterior = logposterior)
-    compute_ais_weights(pchain, sigma, compute_denom, reuse_weights)
+create_adaptive_is <- function(gen_mu_chains){
+  ais <- function(logposterior,
+                  mu, sig2_adapt = sig2_prop, sig2_prop,
+                  compute_denom_table = compute_denom_table_byrow_rcpp,
+                  N = 10, T = 100, M = 2)
+  {
+    mu_chains <-
+      gen_mu_chains(logposterior = logposterior,
+                               mu = mu, sigma = sig2_adapt,
+                               T = T, N = N, M = M)
+    is_step <- 
+      importance_sampling(logposterior = logposterior,
+                          mu_chains = mu_chains,
+                          sigma2 = sig2_prop,
+                          compute_denom_table = compute_denom_table)
+    ais_res <- c(list("mu" = mu_chains), is_step)
+    return(ais_res)
   }
 }
-indep_apis <- create_adaptive_is(indep_chains_apis)
-indep_pmc <- create_adaptive_is(indep_chains_pmc)
+pmc <- create_adaptive_is(gen_mu_chains_pmc)
+apis <- create_adaptive_is(gen_mu_chains_apis)
 
+
+lais <- function(logposterior,
+                mu, sig2_adapt = sig2_prop, sig2_prop,
+                compute_denom_table = compute_denom_table_byrow_rcpp,
+                T = 100,  N = 2, M = 2)
+{
+  mu_chains <-
+    gen_mu_chains_mcmc(logposterior = logposterior,
+                       mu = mu, sigma2 = sig2_adapt,
+                       T = T, N = N)
+  is_step <- 
+    importance_sampling(logposterior = logposterior,
+                        mu_chains = mu_chains,
+                        sigma2 = sig2_prop,
+                        compute_denom_table = compute_denom_table)
+  ais_res <- c(list("mu" = mu_chains), is_step)
+  return(ais_res)
+}
+
+importance_sampling <-
+  function(logposterior,
+           mu_chains,
+           sigma2,
+           compute_denom_table = compute_denom_table_byrow_rcpp,
+           T = 100, N = 2, M = 2)
+  {
+    D = dim(mu_chains)[1]
+    xs_chain <-
+      gen_xs_rcpp(mu = mu_chains, sigma2 = sigma2,
+                  D = D, T = T, N = N, M = M)
+    loglik_table <-
+      compute_loglik_table(logposterior = logposterior,
+                           x = xs_chain,
+                           D = D, T = T, N = N, M = M)
+    denom_table <-
+      compute_denom_table(x = xs_chain,
+                         mu = mu_chains,
+                         sigma2 = sigma2,
+                         D = D, T = T, N = N, M = M)
+    weight_table <-
+      compute_weight_table(loglik_table = loglik_table,
+                           denom_table = denom_table)
+    is_res <- list("x" = xs_chain,
+                   "loglik" = loglik_table,
+                   "denom" = denom_table,
+                   "weight" = weight_table)
+    return(is_res)
+  }
 

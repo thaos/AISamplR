@@ -1,9 +1,10 @@
-simple_MH <- function(logposterior, mu, sigma, T = 100){
+simple_MH <- function(logposterior, mu, sigma2, T = 100){
   UseMethod("simple_MH", logposterior)
 }
 
-simple_MH.function <- function(logposterior, mu, sigma, T = 100){
-  if(length(mu) != length(sigma)) stop("length(mu) != length(sigma)")
+simple_MH.function <- function(logposterior, mu, sigma2, T = 100){
+  if(length(mu) != length(sigma2)) stop("length(mu) != length(sigma2)")
+  sigma <- sqrt(sigma2)
   D <- length(mu)
   x <- matrix(0, nrow = D, ncol = T)
   x[, 1] <- mu
@@ -28,11 +29,11 @@ simple_MH.function <- function(logposterior, mu, sigma, T = 100){
   return(x)
 }
 
-simple_MH.externalptr <- function(logposterior, mu, sigma, T = 100){
+simple_MH.externalptr <- function(logposterior, mu, sigma2, T = 100){
   simple_MH_rcpp(
     lp = logposterior,
     mu = mu,
-    sigma = sigma,
+    sigma2 = sigma2,
     T = T
   )
 }
