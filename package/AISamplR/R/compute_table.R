@@ -44,7 +44,7 @@ compute_loglik_table.function <-
   {
     xs_2dmat <- matrix(xs_chain, nrow = D) 
     lp_2dmat <- eval_logposterior(xs_2dmat, logposterior) 
-    lp_arr <- structure(lp_2dmat, dim = c(T, M, N))
+    lp_arr <- structure(lp_2dmat, dim = c(T, N, M))
     return(lp_arr)
   }
 

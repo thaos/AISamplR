@@ -9,6 +9,6 @@ rgl_plot <- function(x, y, z){
   ncol  <- 100
   cuts <- cut(z, seq(min(z) , max(z), length.out = ncol + 1))
   col <- rainbow(ncol)[cuts]
-  rgl::plot3d(x, y, z)
+  rgl::plot3d(x, y, z, col = col)
 }
 

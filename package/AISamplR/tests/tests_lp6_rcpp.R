@@ -1,4 +1,3 @@
-
 # logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
 body_lp6 <- '
 // [[Rcpp::export]]
