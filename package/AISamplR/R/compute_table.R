@@ -53,6 +53,6 @@ compute_loglik_table.externalptr  <-
   {
     compute_loglik_table_rcpp(lp = logposterior,
                               x = xs_chain,
-                              D = 2, T = T, N = N, M = M)
+                              D = D, T = T, N = N, M = M)
   }
 

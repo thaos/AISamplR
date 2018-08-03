@@ -13,11 +13,11 @@ lposterior_1 <- function(x){
   sigma_4 <- matrix(c(3, rep(0, 2), 5), ncol = 2, nrow = 2)
   mu_5 <- c(14, -14)
   sigma_5 <- matrix(c(2, rep(-0.1, 2), 2), ncol = 2, nrow = 2)
-  f_1  <- dmvnorm(x, mean = mu_1 , sigma = sigma_1) 
-  f_2  <- dmvnorm(x, mean = mu_2 , sigma = sigma_2) 
-  f_3  <- dmvnorm(x, mean = mu_3 , sigma = sigma_3) 
-  f_4  <- dmvnorm(x, mean = mu_4 , sigma = sigma_4) 
-  f_5  <- dmvnorm(x, mean = mu_5 , sigma = sigma_5) 
+  f_1  <- mvtnorm::dmvnorm(x, mean = mu_1 , sigma = sigma_1) 
+  f_2  <- mvtnorm::dmvnorm(x, mean = mu_2 , sigma = sigma_2) 
+  f_3  <- mvtnorm::dmvnorm(x, mean = mu_3 , sigma = sigma_3) 
+  f_4  <- mvtnorm::dmvnorm(x, mean = mu_4 , sigma = sigma_4) 
+  f_5  <- mvtnorm::dmvnorm(x, mean = mu_5 , sigma = sigma_5) 
   f <- f_1 + f_2 + f_3 + f_4 + f_5
   # print(paste("f_1 = " ,  f_1))
   # print(paste("f_2 = " ,  f_2))
@@ -34,7 +34,7 @@ lposterior_1 <- function(x){
 lposterior_2 <- function(x){
   mu <- c(0, 16)
   sigma <- matrix(c(3, rep(0, 2), 3), ncol = 2, nrow = 2)
-  dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
+  mvtnorm::dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
 }
 
 
@@ -52,8 +52,8 @@ lposterior_3 <- function(x){
   sigma_1 <- matrix(c(2, rep(0.6, 2), 1), ncol = 2, nrow = 2)
   mu_2 <- c(0, 16)
   sigma_2 <- matrix(c(3, rep(0, 2), 3), ncol = 2, nrow = 2)
-  f_1  <- 1/2 * dmvnorm(x, mean = mu_1 , sigma = sigma_1) 
-  f_2  <- 1/2 * dmvnorm(x, mean = mu_2 , sigma = sigma_2) 
+  f_1  <- 1/2 * mvtnorm::dmvnorm(x, mean = mu_1 , sigma = sigma_1) 
+  f_2  <- 1/2 * mvtnorm::dmvnorm(x, mean = mu_2 , sigma = sigma_2) 
   f <- f_1 + f_2 
   log(f)
 }
@@ -67,7 +67,7 @@ lposterior_3 <- function(x){
 lposterior_4 <- function(x){
   mu <- c(0, 16, 5, -5)
   sigma <- diag(4, 4)
-  dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
+  mvtnorm::dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
 }
 
 # mu <- true=5*ones(DIM,1);
@@ -79,7 +79,7 @@ lposterior_4 <- function(x){
 lposterior_5 <- function(x){
   mu <- rep(5, 10)
   sigma <- diag(4, 10)
-  dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
+  mvtnorm::dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
 }
 
 
