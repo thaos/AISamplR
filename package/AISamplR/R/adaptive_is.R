@@ -76,7 +76,7 @@ lais <- function(logposterior,
                         compute_denom_table = compute_denom_table,
                         T = T, N = N, M = M)
   ais_res <- c(list("mu" = mu_chains), is_step)
-  invisibleais_res)
+  invisible(ais_res)
 }
 
 importance_sampling <-
