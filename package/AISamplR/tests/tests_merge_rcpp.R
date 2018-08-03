@@ -107,7 +107,8 @@ pmc(lp6$pointer,
      compute_denom = compute_denom_table_byrow_rcpp,
      N = 2, T = 100, M = 2)
 
-pmc(lp6$pointer,
+pmc_lp6 <- 
+  pmc(lp6$pointer,
      mu = matrix(1:4, nrow = 2, ncol = 100),
      sig2_adapt = c(1, 1), c(1, 1),
      compute_denom = compute_denom_table_byrow_rcpp,

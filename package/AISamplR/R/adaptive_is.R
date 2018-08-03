@@ -76,7 +76,7 @@ lais <- function(logposterior,
                         compute_denom_table = compute_denom_table,
                         T = T, N = N, M = M)
   ais_res <- c(list("mu" = mu_chains), is_step)
-  return(ais_res)
+  invisibleais_res)
 }
 
 importance_sampling <-
@@ -94,7 +94,7 @@ importance_sampling <-
       compute_loglik_table(logposterior = logposterior,
                            x = xs_chain,
                            D = D, T = T, N = N, M = M)
-    message("Computing denominator table:"
+    message("Computing denominator table:")
     denom_table <-
       compute_denom_table(x = xs_chain,
                          mu = mu_chains,
