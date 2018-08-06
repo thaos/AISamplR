@@ -60,7 +60,7 @@ pmc_lp5_rcpp <-
   pmc(lp5$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(pmc_lp5_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -71,7 +71,7 @@ pmc_lp5_r <-
   pmc(lposterior_5,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(pmc_lp5_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -82,7 +82,7 @@ apis_lp5_rcpp <-
   apis(lp5$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(apis_lp5_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -93,7 +93,7 @@ apis_lp5_r <-
   apis(lposterior_5,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(apis_lp5_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -104,7 +104,7 @@ lais_lp5_rcpp <-
   lais(lp5$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(lais_lp5_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -114,9 +114,8 @@ with(lais_lp5_rcpp, compute_expectation(x, weight))
 lais_lp5_r <- 
   lais(lposterior_5,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = c(1, 1),sig2_prop = c(1, 1),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(lais_lp5_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))

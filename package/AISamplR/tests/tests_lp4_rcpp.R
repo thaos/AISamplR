@@ -1,4 +1,4 @@
-# mu_true = rep(5, 10);
+# mu_true = c(0, 16, 5, -5);
 body_lp4 <- '
 const double log2pi = std::log(2.0 * M_PI);
 arma::vec Mahalanobis(arma::mat x, arma::rowvec center, arma::mat cov) {
@@ -33,7 +33,7 @@ double lposterior(NumericVector x){
   }
   std::size_t j;
   for(std::size_t i = 0 ; i < d; ++i ){
-    j = i * 10 + i;
+    j = i *d + i;
     sigma_arr[j] = 4;
   }
   arma::mat sigma(&sigma_arr[0], d, d);
@@ -51,13 +51,13 @@ double lposterior(NumericVector x){
 '  
 lp4 <- make_lposterior_rcpp(body = body_lp4)
 
-D <- 10
+D <- 4
 
 pmc_lp4_rcpp <- 
   pmc(lp4$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(100, D), sig2_prop = rep(1, D),
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(pmc_lp4_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -67,8 +67,8 @@ with(pmc_lp4_rcpp, compute_expectation(x, weight))
 pmc_lp4_r <- 
   pmc(lposterior_4,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(100, D), sig2_prop = rep(1, D),
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(pmc_lp4_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -78,8 +78,8 @@ with(pmc_lp4_r, compute_expectation(x, weight))
 apis_lp4_rcpp <- 
   apis(lp4$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(100, D), sig2_prop = rep(1, D),
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(apis_lp4_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -89,8 +89,8 @@ with(apis_lp4_rcpp, compute_expectation(x, weight))
 apis_lp4_r <- 
   apis(lposterior_4,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(100, D), sig2_prop = rep(1, D),
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(apis_lp4_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -100,8 +100,8 @@ with(apis_lp4_r, compute_expectation(x, weight))
 lais_lp4_rcpp <- 
   lais(lp4$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(100, D), sig2_prop = rep(1, D),
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(lais_lp4_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -111,9 +111,8 @@ with(lais_lp4_rcpp, compute_expectation(x, weight))
 lais_lp4_r <- 
   lais(lposterior_4,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = c(1, 1),sig2_prop = c(1, 1),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(100, D), sig2_prop = rep(1, D),
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(lais_lp4_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))

@@ -279,6 +279,7 @@ NumericVector gen_mu_chain_apis_rcpp(fp_logposterior_t lp, NumericVector mu, Num
     xs_curr = gen_xs_rcpp(mu_curr, sigma2, D, 1, 1, M);
     loglik_curr = compute_loglik_table_rcpp(lp, xs_curr, D, 1, 1, M);
     denom_curr = compute_denom_table_bybox_rcpp(xs_curr, mu_curr, sigma2, D, 1, 1, M);
+    weight_curr = exp(loglik_curr - denom_curr);
     bool zerotest = is_true(all(weight_curr == 0.0));
     if(zerotest) weight_curr = rep(1, weight_curr.length());
     weight_curr = weight_curr / sum(weight_curr);

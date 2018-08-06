@@ -16,7 +16,7 @@ pmc_lp6_rcpp <-
   pmc(lp6$pointer,
      mu = matrix(1:4, nrow = 2, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(pmc_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -27,7 +27,7 @@ pmc_lp6_r <-
   pmc(lposterior_6,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(pmc_lp6_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -38,7 +38,7 @@ apis_lp6_rcpp <-
   apis(lp6$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(apis_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -49,7 +49,7 @@ apis_lp6_r <-
   apis(lposterior_6,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(apis_lp6_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -60,7 +60,7 @@ lais_lp6_rcpp <-
   lais(lp6$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(lais_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -71,7 +71,7 @@ lais_lp6_r <-
   lais(lposterior_6,
      mu = matrix(1:4, nrow = D, ncol = 100),
      sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom = compute_denom_table_byrow_rcpp,
+     compute_denom_table = compute_denom_table_byrow_rcpp,
      N = 100, T = 1000, M = 5)
 
 with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
