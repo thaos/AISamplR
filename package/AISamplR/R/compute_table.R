@@ -1,14 +1,14 @@
 
 compute_weight_table <- 
-  function(loglik_table, denom_table)
+  function(loglik_table, logdenom_table)
   {
-    if(any(is.infinite(denom_table))){
-      denom_table[is.infinite(denom_table) & denom_table < 0] <-
-        min(denom_table[is.finite(denom_table) & denom_table < 0])
-      warning("some negative infinite denominators: \n
+    if(any(is.infinite(logdenom_table))){
+      logdenom_table[is.infinite(logdenom_table) & logdenom_table < 0] <-
+        min(logdenom_table[is.finite(logdenom_table) & logdenom_table < 0])
+      warning("some negative infinite logdenominators: \n
               replacing by minimmum finite denoninator")
     }
-    weight_table <- exp(loglik_table - denom_table)
+    weight_table <- exp(loglik_table - logdenom_table)
     if(any(is.infinite(weight_table))){
       weight_table[is.infinite(weight_table)] <-
         max(weight_table[is.finite(weight_table)]) + 1

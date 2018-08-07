@@ -7,46 +7,6 @@
 
 using namespace Rcpp;
 
-// Mahalanobis
-arma::vec Mahalanobis(arma::mat x, arma::rowvec center, arma::mat cov);
-RcppExport SEXP _AISamplR_Mahalanobis(SEXP xSEXP, SEXP centerSEXP, SEXP covSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::rowvec >::type center(centerSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type cov(covSEXP);
-    rcpp_result_gen = Rcpp::wrap(Mahalanobis(x, center, cov));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dmvnorm_arma
-arma::vec dmvnorm_arma(arma::mat x, arma::rowvec mean, arma::mat sigma, bool log);
-RcppExport SEXP _AISamplR_dmvnorm_arma(SEXP xSEXP, SEXP meanSEXP, SEXP sigmaSEXP, SEXP logSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::rowvec >::type mean(meanSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< bool >::type log(logSEXP);
-    rcpp_result_gen = Rcpp::wrap(dmvnorm_arma(x, mean, sigma, log));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rmvnorm_arma
-arma::mat rmvnorm_arma(int n, arma::vec mu, arma::mat sigma);
-RcppExport SEXP _AISamplR_rmvnorm_arma(SEXP nSEXP, SEXP muSEXP, SEXP sigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(rmvnorm_arma(n, mu, sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
 // simple_MH_rcpp
 NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVector sigma2, int T);
 RcppExport SEXP _AISamplR_simple_MH_rcpp(SEXP lpSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP TSEXP) {
@@ -93,9 +53,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// compute_denom_table_bybox_rcpp
-NumericVector compute_denom_table_bybox_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T, int N, int M);
-RcppExport SEXP _AISamplR_compute_denom_table_bybox_rcpp(SEXP xSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP DSEXP, SEXP TSEXP, SEXP NSEXP, SEXP MSEXP) {
+// compute_logdenom_bybox_rcpp
+NumericVector compute_logdenom_bybox_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T, int N, int M);
+RcppExport SEXP _AISamplR_compute_logdenom_bybox_rcpp(SEXP xSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP DSEXP, SEXP TSEXP, SEXP NSEXP, SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -106,13 +66,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type T(TSEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type M(MSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_denom_table_bybox_rcpp(x, mu, sigma2, D, T, N, M));
+    rcpp_result_gen = Rcpp::wrap(compute_logdenom_bybox_rcpp(x, mu, sigma2, D, T, N, M));
     return rcpp_result_gen;
 END_RCPP
 }
-// compute_denom_table_byrow_rcpp
-NumericVector compute_denom_table_byrow_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T, int N, int M);
-RcppExport SEXP _AISamplR_compute_denom_table_byrow_rcpp(SEXP xSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP DSEXP, SEXP TSEXP, SEXP NSEXP, SEXP MSEXP) {
+// compute_logdenom_byrow_rcpp
+NumericVector compute_logdenom_byrow_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T, int N, int M);
+RcppExport SEXP _AISamplR_compute_logdenom_byrow_rcpp(SEXP xSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP DSEXP, SEXP TSEXP, SEXP NSEXP, SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -123,13 +83,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type T(TSEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type M(MSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_denom_table_byrow_rcpp(x, mu, sigma2, D, T, N, M));
+    rcpp_result_gen = Rcpp::wrap(compute_logdenom_byrow_rcpp(x, mu, sigma2, D, T, N, M));
     return rcpp_result_gen;
 END_RCPP
 }
-// compute_denom_table_bytable_rcpp
-NumericVector compute_denom_table_bytable_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T, int N, int M);
-RcppExport SEXP _AISamplR_compute_denom_table_bytable_rcpp(SEXP xSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP DSEXP, SEXP TSEXP, SEXP NSEXP, SEXP MSEXP) {
+// compute_logdenom_bytable_rcpp
+NumericVector compute_logdenom_bytable_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T, int N, int M);
+RcppExport SEXP _AISamplR_compute_logdenom_bytable_rcpp(SEXP xSEXP, SEXP muSEXP, SEXP sigma2SEXP, SEXP DSEXP, SEXP TSEXP, SEXP NSEXP, SEXP MSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -140,7 +100,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type T(TSEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type M(MSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_denom_table_bytable_rcpp(x, mu, sigma2, D, T, N, M));
+    rcpp_result_gen = Rcpp::wrap(compute_logdenom_bytable_rcpp(x, mu, sigma2, D, T, N, M));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -186,15 +146,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_AISamplR_Mahalanobis", (DL_FUNC) &_AISamplR_Mahalanobis, 3},
-    {"_AISamplR_dmvnorm_arma", (DL_FUNC) &_AISamplR_dmvnorm_arma, 4},
-    {"_AISamplR_rmvnorm_arma", (DL_FUNC) &_AISamplR_rmvnorm_arma, 3},
     {"_AISamplR_simple_MH_rcpp", (DL_FUNC) &_AISamplR_simple_MH_rcpp, 4},
     {"_AISamplR_gen_xs_rcpp", (DL_FUNC) &_AISamplR_gen_xs_rcpp, 6},
     {"_AISamplR_compute_loglik_table_rcpp", (DL_FUNC) &_AISamplR_compute_loglik_table_rcpp, 6},
-    {"_AISamplR_compute_denom_table_bybox_rcpp", (DL_FUNC) &_AISamplR_compute_denom_table_bybox_rcpp, 7},
-    {"_AISamplR_compute_denom_table_byrow_rcpp", (DL_FUNC) &_AISamplR_compute_denom_table_byrow_rcpp, 7},
-    {"_AISamplR_compute_denom_table_bytable_rcpp", (DL_FUNC) &_AISamplR_compute_denom_table_bytable_rcpp, 7},
+    {"_AISamplR_compute_logdenom_bybox_rcpp", (DL_FUNC) &_AISamplR_compute_logdenom_bybox_rcpp, 7},
+    {"_AISamplR_compute_logdenom_byrow_rcpp", (DL_FUNC) &_AISamplR_compute_logdenom_byrow_rcpp, 7},
+    {"_AISamplR_compute_logdenom_bytable_rcpp", (DL_FUNC) &_AISamplR_compute_logdenom_bytable_rcpp, 7},
     {"_AISamplR_gen_mu_chain_apis_rcpp", (DL_FUNC) &_AISamplR_gen_mu_chain_apis_rcpp, 5},
     {"_AISamplR_gen_mu_chain_pmc_rcpp", (DL_FUNC) &_AISamplR_gen_mu_chain_pmc_rcpp, 5},
     {"_AISamplR_rcpp_hello_world", (DL_FUNC) &_AISamplR_rcpp_hello_world, 0},

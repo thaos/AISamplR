@@ -15,7 +15,11 @@ simple_MH.function <- function(logposterior, mu, sigma2, T = 100){
     proposition  <- rnorm(D, mean = x[, i-1], sd = sigma)
     #acceptance prob
     cur_lposterior <- logposterior(proposition)
-    rho <- exp(cur_lposterior - prev_lposterior)
+    if(cur_lposterior < 0 & is.infinite(cur_lposterior)){
+      rho <- 0
+    }else{
+      rho <- exp(cur_lposterior - prev_lposterior)
+    }
     alpha <- min(c(1,rho))
     # MH TEST
     u <- runif(1)

@@ -6,7 +6,7 @@ compute_nextmu_apis <- function(xmat, weights){
 
 compute_nextmu_pmc <- function(xmat, weights){
   if(any(is.na(weights))) stop("some weights are NA")
-  xmat[, as.logical(rmultinom(1, 1, weights))]
+  xmat[, ,as.logical(rmultinom(1, 1, weights))]
 }
 
 create_gen_mu_chain <- function(compute_nextmu){
@@ -15,19 +15,21 @@ create_gen_mu_chain <- function(compute_nextmu){
     mu_res <- matrix(nrow =  D, ncol = T)
     x_res <- array(dim = c(D, T, M))
     pi_res <- array(dim = c(T, M))
-    denom_res <- array(dim = c(T, M))
+    logdenom_res <- array(dim = c(T, M))
     mu_res[, 1] <- mu
     x_res[, 1,] <- draw_proposals(n = M, mu, sigma2)
-    pi_res[1, ] <- eval_logposterior(x_res[, 1,], logposterior)
-    denom_res[1, ] <- log(eval_proposals(x_res[, 1,], mu, sigma2))
+    pi_res[1, ] <- eval_logposterior(x_res[, 1,, drop = FALSE], logposterior)
+    logdenom_res[1, ] <- log(eval_proposals(x_res[, 1,, drop = FALSE], mu, sigma2))
     for(t in seq.int(T)[-1]){
       weights <- normalize_weights(
-        compute_weight_table(pi_res[t-1, ], denom_res[t-1, ])
+        compute_weight_table(pi_res[t-1, ], logdenom_res[t-1, ])
       )
-      mu_res[, t] <- compute_nextmu(x_res[, t-1,], weights)
-      x_res[,t ,] <- draw_proposals(n = M, mu_res[, t], sigma2)
-      pi_res[t, ] <- eval_logposterior(x_res[, t,], logposterior)
-      denom_res[t, ] <- log(eval_proposals(x_res[, t,], mu_res[, t], sigma2))
+      mu_res[, t] <- compute_nextmu(x_res[, t-1,, drop = FALSE], weights)
+      x_res[,t ,] <- draw_proposals(n = M, mu_res[, t, drop = FALSE], sigma2)
+      pi_res[t, ] <- eval_logposterior(x_res[, t,, drop = FALSE], logposterior)
+      logdenom_res[t, ] <- log(eval_proposals(x_res[, t,, drop = FALSE],
+                                              mu_res[, t, drop = FALSE],
+                                              sigma2))
     }
     return(mu_res)
   }

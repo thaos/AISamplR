@@ -1,4 +1,7 @@
-#' @importFrom mvtnorm dmvnorm 
+lposterior_0 <- function(x){
+  dexp(x, log = TRUE)
+}
+
 
 #mu_true=[1.6 1.4]';
 #Marglike_true=1;

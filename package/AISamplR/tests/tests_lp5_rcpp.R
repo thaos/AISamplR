@@ -59,8 +59,8 @@ D <- 10
 pmc_lp5_rcpp <- 
   pmc(lp5$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom_table = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+     compute_logdenom = compute_logdenom_byrow,
      N = 100, T = 1000, M = 5)
 
 with(pmc_lp5_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -70,8 +70,8 @@ with(pmc_lp5_rcpp, compute_expectation(x, weight))
 pmc_lp5_r <- 
   pmc(lposterior_5,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom_table = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+     compute_logdenom = compute_logdenom_byrow,
      N = 100, T = 1000, M = 5)
 
 with(pmc_lp5_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -81,8 +81,8 @@ with(pmc_lp5_r, compute_expectation(x, weight))
 apis_lp5_rcpp <- 
   apis(lp5$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom_table = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+     compute_logdenom = compute_logdenom_byrow,
      N = 100, T = 1000, M = 5)
 
 with(apis_lp5_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -92,8 +92,8 @@ with(apis_lp5_rcpp, compute_expectation(x, weight))
 apis_lp5_r <- 
   apis(lposterior_5,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom_table = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+     compute_logdenom = compute_logdenom_byrow,
      N = 100, T = 1000, M = 5)
 
 with(apis_lp5_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -103,8 +103,8 @@ with(apis_lp5_r, compute_expectation(x, weight))
 lais_lp5_rcpp <- 
   lais(lp5$pointer,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom_table = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+     compute_logdenom = compute_logdenom_byrow,
      N = 100, T = 1000, M = 5)
 
 with(lais_lp5_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
@@ -114,8 +114,8 @@ with(lais_lp5_rcpp, compute_expectation(x, weight))
 lais_lp5_r <- 
   lais(lposterior_5,
      mu = matrix(1:4, nrow = D, ncol = 100),
-     sig2_adapt = rep(1, D), sig2_prop = rep(1, D),
-     compute_denom_table = compute_denom_table_byrow_rcpp,
+     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+     compute_logdenom = compute_logdenom_byrow,
      N = 100, T = 1000, M = 5)
 
 with(lais_lp5_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
