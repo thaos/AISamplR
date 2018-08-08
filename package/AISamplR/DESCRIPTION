@@ -1,18 +1,18 @@
 Package: AISamplR
 Type: Package
-Title: The Package Provides Functions for Adapative Importance Sampling
+Title: Functions for Adapative Importance Sampling
 Version: 1.0
 Date: 2018-08-02
 Authors@R: c(person("Victor", "Elvira", email = "victor.elvira@imt-lille-douai.fr", role = c("aut")),
              person("Luca", "Martino", email = "lmartino@ing.uc3m.es", role = c("aut")),
              person("Soulivanh", "Thao", email = "soulivanh.thao@lsce.ipsl.fr", role = c("aut", "cre")))
-Description: The package implements three methods of adaptive importance sampling: 
+Description: Three methods of adaptive importance sampling are implemented in this package: 
         Layered Adaptive Importance Sampling (LAIS),
         Adaptive Population Importance Sampling (APIS)
         and Population Monte Carlo (PMC).
         For more details about the methods, please see the following references.
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.18), RcppArmadillo
+Imports: Rcpp (>= 0.12.18)
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress
 Suggests: rgl, mvtnorm
 RoxygenNote: 6.1.0

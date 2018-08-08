@@ -65,7 +65,7 @@ NumericMatrix simple_MH_rcpp(fp_logposterior_t lp, NumericVector mu, NumericVect
     // Rcout << "x : " << x(0, i - 1) << " ; "<< x(1, i - 1) << std::endl;
     proposition = as<NumericVector>(wrap(rmvnorm_arma(1, x(_, i - 1), sigma_mat)));
     cur_lposterior = (*lp)(proposition);
-    if( isinf(cur_lposterior) && cur_lposterior < 0){
+    if( std::isinf(cur_lposterior) && cur_lposterior < 0){
       rho = 0;
     } else {
     // Rcout << "proposition : "  << proposition << "; loglik : " << cur_lposterior <<std::endl ;
