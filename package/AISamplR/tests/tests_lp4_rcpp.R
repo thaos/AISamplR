@@ -1,3 +1,6 @@
+Sys.setenv("R_TESTS" = "")
+library(AISamplR)
+
 lposterior_4 <- function(x){
   mu <- c(0, 16, 5, -5)
   sigma <- diag(4, 4)

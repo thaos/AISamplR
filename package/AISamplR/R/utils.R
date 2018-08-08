@@ -14,6 +14,7 @@
 #' @param weight an array of dimension T x M x N with the weight corresponding
 #' to every sample of \code{x}.
 #' @param f a function to be applied to each sample \code{x}.
+#' @param ... additional parameters for the function \code{f}.
 #' 
 #' @examples
 #' # draw samples from the "banana shaped distribution" defined by the loglikelihood lposterior_6.

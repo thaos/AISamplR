@@ -12,7 +12,7 @@ Description: The package implements three methods of adaptive importance samplin
         and Population Monte Carlo (PMC).
         For more details about the methods, please see the following references.
 License: GPL (>= 2)
-Imports: Rcpp (>= 0.12.18)
+Imports: Rcpp (>= 0.12.18), RcppArmadillo
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress
-Suggests: rgl
+Suggests: rgl, mvtnorm
 RoxygenNote: 6.1.0

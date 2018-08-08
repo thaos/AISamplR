@@ -10,6 +10,7 @@
 #' @useDynLib AISamplR
 #' @name AISamplR
 #' 
+#' @import Rcpp RcppArmadillo
 #' @importFrom grDevices rainbow
 #' @importFrom stats dexp dnorm median rmultinom rnorm runif weighted.mean
 NULL

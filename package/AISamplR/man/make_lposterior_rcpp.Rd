@@ -33,9 +33,8 @@ The function helps sourcing the code of a C++ function and
 returns a pointer to this function that is useable by R.
 
 To so, the function follows the method describe 
-\link[=http://gallery.rcpp.org/articles/passing-cpp-function-pointers/]{here}
 in the Rcpp gallery:
-http://gallery.rcpp.org/articles/passing-cpp-function-pointers
+\url{http://gallery.rcpp.org/articles/passing-cpp-function-pointers}
 
 The function uses \code{RcppArmadillo} and \code{Rcpp}
 which are imported for the C++ code.

@@ -1,3 +1,6 @@
+Sys.setenv("R_TESTS" = "")
+library(AISamplR)
+
 lposterior_6 <- function(x){
   x1 <- x[1]
   x2 <- x[2]

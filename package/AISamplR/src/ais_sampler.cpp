@@ -121,7 +121,7 @@ NumericVector compute_loglik_table_rcpp(fp_logposterior_t lp, NumericVector x, i
   return(loglik_res);
 }
 
-// @rdname compute_logdenom_bytable
+//' @rdname compute_logdenom_bytable
 //' @export
 // [[Rcpp::export("compute_logdenom_bybox")]]
 NumericVector compute_logdenom_bybox_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T,  int N, int M){
@@ -161,7 +161,7 @@ NumericVector compute_logdenom_bybox_rcpp(NumericVector x, NumericVector mu, Num
   return(logdenom_res);
 }
 
-// @rdname compute_logdenom_bytable
+//' @rdname compute_logdenom_bytable
 //' @export
 // [[Rcpp::export("compute_logdenom_byrow")]]
 NumericVector compute_logdenom_byrow_rcpp(NumericVector x, NumericVector mu, NumericVector sigma2, int D, int T,  int N, int M){
@@ -270,7 +270,7 @@ NumericVector compute_logdenom_byrow_rcpp(NumericVector x, NumericVector mu, Num
 //'    sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
 //'    compute_logdenom = compute_logdenom_byrow,
 //'    N = N, T = T, M = M)
-//' with(pmc_lpexp_r, plot(x  = x, y = weight)))
+//' with(pmc_lpexp_r, plot(x  = x, y = weight))
 //' with(pmc_lpexp_r, compute_expectation(x, weight)) # theorical value: ~ [1]
 //' 
 //' # Recompute the denominator

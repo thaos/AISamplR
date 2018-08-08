@@ -13,11 +13,13 @@ compute_loglik_table_rcpp <- function(lp, x, D, T, N, M) {
     .Call('_AISamplR_compute_loglik_table_rcpp', PACKAGE = 'AISamplR', lp, x, D, T, N, M)
 }
 
+#' @rdname compute_logdenom_bytable
 #' @export
 compute_logdenom_bybox <- function(x, mu, sigma2, D, T, N, M) {
     .Call('_AISamplR_compute_logdenom_bybox_rcpp', PACKAGE = 'AISamplR', x, mu, sigma2, D, T, N, M)
 }
 
+#' @rdname compute_logdenom_bytable
 #' @export
 compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
     .Call('_AISamplR_compute_logdenom_byrow_rcpp', PACKAGE = 'AISamplR', x, mu, sigma2, D, T, N, M)
@@ -81,7 +83,7 @@ compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
 #'    sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
 #'    compute_logdenom = compute_logdenom_byrow,
 #'    N = N, T = T, M = M)
-#' with(pmc_lpexp_r, plot(x  = x, y = weight)))
+#' with(pmc_lpexp_r, plot(x  = x, y = weight))
 #' with(pmc_lpexp_r, compute_expectation(x, weight)) # theorical value: ~ [1]
 #' 
 #' # Recompute the denominator

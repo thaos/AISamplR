@@ -11,7 +11,7 @@ importance_sampling <-
                   D = D, T = T, N = N, M = M)
     loglik_table <-
       compute_loglik_table(logposterior = logposterior,
-                           x = xs_chain,
+                           xs_chain = xs_chain,
                            D = D, T = T, N = N, M = M)
     message("Computing denominator table:")
     logdenom_table <-
@@ -37,7 +37,7 @@ create_adaptive_is <- function(gen_mu_chains){
   {
     mu_chains <-
       gen_mu_chains(logposterior = logposterior,
-                               mu = mu, sigma = sig2_adapt,
+                               mu = mu, sigma2 = sig2_adapt,
                                T = T, N = N, M = M)
     is_step <- 
       importance_sampling(logposterior = logposterior,

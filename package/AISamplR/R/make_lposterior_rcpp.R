@@ -6,9 +6,8 @@
 #' returns a pointer to this function that is useable by R. 
 #' 
 #' To so, the function follows the method describe 
-#' \link[=http://gallery.rcpp.org/articles/passing-cpp-function-pointers/]{here}
 #' in the Rcpp gallery:
-#' http://gallery.rcpp.org/articles/passing-cpp-function-pointers
+#' \url{http://gallery.rcpp.org/articles/passing-cpp-function-pointers}
 #' 
 #' The function uses \code{RcppArmadillo} and \code{Rcpp}
 #' which are imported for the C++ code.
@@ -134,10 +133,13 @@ make_lposterior_rcpp <- function(body, ...){
   '
   code <- paste(head_cpp, body, tail_cpp, sep = "\n")
   print(code)
-  env_cpp <- function(...){
-    Rcpp::sourceCpp(code = code, env = environment(), ...)
-    list(fun = lposterior, pointer = make_lposterior_cpp())
-  }
-  env_cpp()
+  res <- env_cpp(code, ...)
+  return(res)
 }
 
+
+env_cpp <- function(code, env, ...){
+  lposterior <- make_lposterior_cpp <- function(){}
+  Rcpp::sourceCpp(code = code, env = environment(), ...)
+  list(fun = lposterior, pointer = make_lposterior_cpp())
+}

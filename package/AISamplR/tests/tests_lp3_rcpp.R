@@ -1,3 +1,6 @@
+Sys.setenv("R_TESTS" = "")
+library(AISamplR)
+
 lposterior_3 <- function(x){
   mu_1 <- c(5, 0)
   sigma_1 <- matrix(c(2, rep(0.6, 2), 1), ncol = 2, nrow = 2)
@@ -8,6 +11,7 @@ lposterior_3 <- function(x){
   f <- f_1 + f_2 
   log(f)
 }
+
 
 # mu_true = rep(2.5, 8);
 body_lp3 <- '

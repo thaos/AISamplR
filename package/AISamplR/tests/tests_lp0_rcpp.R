@@ -1,3 +1,6 @@
+Sys.setenv("R_TESTS" = "")
+library(AISamplR)
+
 lposterior_0 <- function(x){
   dexp(x, log = TRUE)
 }

@@ -14,6 +14,8 @@ from one of the adaptive importance sampling method.}
 to every sample of \code{x}.}
 
 \item{f}{a function to be applied to each sample \code{x}.}
+
+\item{...}{additional parameters for the function \code{f}.}
 }
 \description{
 \code{compute_expectation} computes the expectation of the samples \code{x}.

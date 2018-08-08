@@ -1,3 +1,6 @@
+Sys.setenv("R_TESTS" = "")
+library(AISamplR)
+
 lposterior_1 <- function(x){
   mu_1 <- c(-10, -10)
   sigma_1 <- matrix(c(2, rep(0.6, 2), 1), ncol = 2, nrow = 2)
