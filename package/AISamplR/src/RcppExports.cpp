@@ -134,16 +134,8 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP _AISamplR_rcpp_hello_world() {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpp_hello_world());
-    return rcpp_result_gen;
-END_RCPP
-}
+
+RcppExport SEXP _AISamplR_rcpp_hello_world();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_AISamplR_simple_MH_rcpp", (DL_FUNC) &_AISamplR_simple_MH_rcpp, 4},
@@ -154,7 +146,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_AISamplR_compute_logdenom_bytable_rcpp", (DL_FUNC) &_AISamplR_compute_logdenom_bytable_rcpp, 7},
     {"_AISamplR_gen_mu_chain_apis_rcpp", (DL_FUNC) &_AISamplR_gen_mu_chain_apis_rcpp, 5},
     {"_AISamplR_gen_mu_chain_pmc_rcpp", (DL_FUNC) &_AISamplR_gen_mu_chain_pmc_rcpp, 5},
-    {"_AISamplR_rcpp_hello_world", (DL_FUNC) &_AISamplR_rcpp_hello_world, 0},
+    {"_AISamplR_rcpp_hello_world",              (DL_FUNC) &_AISamplR_rcpp_hello_world,              0},
     {NULL, NULL, 0}
 };
 

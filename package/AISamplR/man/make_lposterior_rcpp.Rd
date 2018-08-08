@@ -9,16 +9,17 @@ make_lposterior_rcpp(body, ...)
 \arguments{
 \item{body}{the C++ code of the function that will be sourced by Rcpp. 
 The function to be exported in R has to be called \code{lposterior}. 
-\code{lposterior} has to take as argument an inpute \code{x} of type Rcpp:: NumericalVector.
+\code{lposterior} has to take as argument 
+an input \code{x} of type Rcpp:: NumericalVector.
 The function should return a \code{double}.}
 
 \item{...}{Additional arguments to be passed to be passed
 to \code{\link[Rcpp]{sourceCpp}} if necessary.}
 }
 \value{
-A list with the following 2 element: 
+A list with the following 2 elements: 
 \itemize{
- \item{fun}{which the C++ function that imported in R}
+ \item{fun}{which is the C++ function that imported and useasble in R}
  \item{pointer}{an external pointer to the C++ function.
   It can be passed as the logposterior argument of 
   the functions \code{\link{lais}}, \code{\link{apis}} and \code{\link{pmc}}.}
@@ -29,19 +30,21 @@ A list with the following 2 element:
 }
 \details{
 The function helps sourcing the code of a C++ function and
-returns a pointer to this function useable by R.
+returns a pointer to this function that is useable by R.
 
 To so, the function follows the method describe 
 \link[=http://gallery.rcpp.org/articles/passing-cpp-function-pointers/]{here}
 in the Rcpp gallery:
 http://gallery.rcpp.org/articles/passing-cpp-function-pointers
 
-The function uses RcppArmadillo and Rcpp which are imported for the C++ code.
-Namespace of Rcpp is imported.
+The function uses \code{RcppArmadillo} and \code{Rcpp}
+which are imported for the C++ code.
+Namespace of Rcpp is also imported.
 }
 \examples{
 # Mixture of 2 Gaussian distributions
 # mu_true = rep(2.5, 8);
+
 lposterior_3 <- function(x){
   mu_1 <- c(5, 0)
   sigma_1 <- matrix(c(2, rep(0.6, 2), 1), ncol = 2, nrow = 2)
@@ -52,10 +55,13 @@ lposterior_3 <- function(x){
   f <- f_1 + f_2 
   log(f)
 }
+
 D <- 2
 T <- 100
 N <- 50
 M <- 4
+
+# lais with an R function
 system.time({
   lais_lp3_r <- lais(lposterior_3,
       mu = matrix(rnorm(D*N, sd = 10), nrow = D, ncol = N),
@@ -114,6 +120,7 @@ body_lp3 <- '
 '  
 lp3 <- make_lposterior_rcpp(body = body_lp3)
 
+# lais with a pointer to a C++ function
 system.time({
   lais_lp3_rcpp <-  lais(lp3$pointer,
     mu = matrix(rnorm(D * N, sd = 3), nrow = D, ncol = N),

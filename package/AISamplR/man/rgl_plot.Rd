@@ -21,10 +21,11 @@ rgl_plot(x, y, z, ...)
 \details{
 The function is a simple wrapper around \code{\link[rgl]{plot3d}}.
 It produces a 3D scatterplot with a rainbow color scale for the z-axis.
-returns a pointer to this function useable by .
 }
 \examples{
+
 # draw samples from the "banana shaped distribution" defined by the loglikelihood lposterior_6.
+
 lposterior_6 <- function(x){
   x1 <- x[1]
   x2 <- x[2]
@@ -40,8 +41,8 @@ lais_lp6_r <- lais(lposterior_6,
    sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
    compute_logdenom = compute_logdenom_byrow,
    N = N, T = T, M = M)
-with(lais_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+   
+with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
-with(lais_lp6_r, compute_expectation(x, weight))
 
 }

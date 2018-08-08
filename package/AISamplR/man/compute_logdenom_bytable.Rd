@@ -17,36 +17,41 @@ It is the result of the adaptaion step in the adapative importance sampling sche
 It provides the variance of each dimension of the gaussian proposal distribution
 used in the sampling step.}
 
-\item{D}{A integer providing the dimension of the space of inputs.}
+\item{D}{An integer providing the dimension of the input space.}
 
-\item{T}{A integer providing the number iterations used in the adaptation step.}
+\item{T}{An integer providing the number iterations used in the adaptation step.}
 
-\item{N}{A integer providing the number of proposal distribution chains used.}
+\item{N}{An integer providing the number of proposal distribution chains used.}
 
-\item{M}{A integer providing the number of samples drawn from each proposal.}
+\item{M}{An integer providing the number of samples drawn from each proposal.}
 }
 \value{
-A array of dimension T x N x M with the logarithm of the 
+An array of dimension T x N x M with the logarithm of the 
 denominator needed to compute the importance sampling weights.
 }
 \description{
-\code{\link{compute_logdenom_bybox}}, code{\link{compute_logdenom_byrow}} and \code{\link{compute_logdenom_bytable}}
-offers three different way to compute the logdenominator of the importance sampling weights.
+\code{\link{compute_logdenom_bybox}}, code{\link{compute_logdenom_byrow}}
+and \code{\link{compute_logdenom_bytable}}
+offers three different ways to compute 
+the logarithm of the denominator of the importance sampling weights.
 }
 \details{
-The weighting step can be performed in different way depending on 
-how we considered the samples drawn at the sampling step.
+The weighting step can be performed in different ways depending on 
+how we considere the samples drawn at the sampling step.
 We can think that one sample was drawn from its own corresponding proposal distribution 
-or that one sample was drawn from a mixture of  proposal distributions. 
+or that one sample was drawn from a mixture of proposal distributions. 
 In this package, three methods to compute the denominator of the weights are available:
 \itemize{
-  \item \code{\link{compute_logdenom_bybox}} where we considered that on sample x_\{t,n,m\} 
+  \item \code{\link{compute_logdenom_bybox}} 
+  where we considered that a sample x_\{t,n,m\} 
   is drawn from an unique 
   proposal distribution with location parameter mu_\{t,n\}.
-  \item \code{\link{compute_logdenom_byrow}} where we considered that on sample  x_\{t,n,m\} 
+  \item \code{\link{compute_logdenom_byrow}} 
+  where we considered that a sample  x_\{t,n,m\} 
   is drawn from an equiprobable mixture
   of all proposal distributions at time t.
-  \item \code{\link{compute_logdenom_bytable}} where we considered that on sample x_\{t,n,m\} 
+  \item \code{\link{compute_logdenom_bytable}} 
+  where we considered that a sample x_\{t,n,m\} 
   is drawn from an equiprobable mixture
   of all available proposal distributions, for all times t = 1,..., T and 
   chains of proposal n = 1,..., N.
@@ -57,10 +62,52 @@ D <- 1
 T <- 10
 N <- 2
 M <- 3
-pmc_lp_r <- pmc(dexp,
-    mu = matrix(rnorm(D*N, mean = 1, sd = 1), nrow = D, ncol = N),
-    sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
-    compute_logdenom = compute_logdenom_byrow,
-    N = N, T = T, M = M)
-with(pmc_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+lpexp <- function(x){
+  dexp(x, log = TRUE)
+}
+
+# Generates weighted samples for the exponential law
+pmc_lpexp_r <- pmc(lpexp,
+   mu = matrix(rnorm(D*N, mean = 1, sd = 1), nrow = D, ncol = N),
+   sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+   compute_logdenom = compute_logdenom_byrow,
+   N = N, T = T, M = M)
+with(pmc_lpexp_r, plot(x  = x, y = weight)))
+with(pmc_lpexp_r, compute_expectation(x, weight)) # theorical value: ~ [1]
+
+# Recompute the denominator
+# with one gaussian proposal distribution associated to each sample.
+logdenom_bybox <- with(pmc_lpexp_r,
+                       compute_logdenom_bybox(x = x, mu = mu, sigma2 = 1,
+                                              D = D, T = T, N = N, M = M)
+                  )
+# Plot new weights associated to each sample
+with(pmc_lpexp_r, plot(x  = x, y = exp(loglik - logdenom_bybox)))
+# Estimate expectation with the new weights
+with(pmc_lpexp_r, compute_expectation(x  = x, weight = exp(loglik - logdenom_bybox)))
+
+# Recompute the denominator
+# with a proposal distribution which is a mixture of
+# the N gaussian proposal distribution at time t.
+logdenom_byrow <- with(pmc_lpexp_r,
+                       compute_logdenom_byrow(x = x, mu = mu, sigma2 = 1,
+                                              D = D, T = T, N = N, M = M)
+)
+# Plot new weights associated to each sample
+with(pmc_lpexp_r, plot(x  = x, y = exp(loglik - logdenom_byrow)))
+# Estimate expectation with the new weights
+with(pmc_lpexp_r, compute_expectation(x  = x, weight = exp(loglik - logdenom_byrow)))
+
+# Recompute the denominator
+# with a proposal distribution which is a mixture of
+# the T x N gaussian proposal distribution available.
+logdenom_bytable <- with(pmc_lpexp_r,
+                       compute_logdenom_bytable(x = x, mu = mu, sigma2 = 1,
+                                              D = D, T = T, N = N, M = M)
+)
+# Plot new weights associated to each sample
+with(pmc_lpexp_r, plot(x  = x, y = exp(loglik - logdenom_bytable)))
+# Estimate expectation with the new weights
+with(pmc_lpexp_r, compute_expectation(x  = x, weight = exp(loglik - logdenom_bytable)))
+
 }

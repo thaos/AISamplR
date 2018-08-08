@@ -25,22 +25,27 @@ compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
 
 #' Computes the logarithm of the denominator of importance sampling weights.
 #' 
-#' \code{\link{compute_logdenom_bybox}}, code{\link{compute_logdenom_byrow}} and \code{\link{compute_logdenom_bytable}}
-#' offers three different way to compute the logdenominator of the importance sampling weights.
+#' \code{\link{compute_logdenom_bybox}}, code{\link{compute_logdenom_byrow}}
+#' and \code{\link{compute_logdenom_bytable}}
+#' offers three different ways to compute 
+#' the logarithm of the denominator of the importance sampling weights.
 #' 
-#' The weighting step can be performed in different way depending on 
-#' how we considered the samples drawn at the sampling step.
+#' The weighting step can be performed in different ways depending on 
+#' how we considere the samples drawn at the sampling step.
 #' We can think that one sample was drawn from its own corresponding proposal distribution 
-#' or that one sample was drawn from a mixture of  proposal distributions. 
+#' or that one sample was drawn from a mixture of proposal distributions. 
 #' In this package, three methods to compute the denominator of the weights are available:
 #' \itemize{
-#'   \item \code{\link{compute_logdenom_bybox}} where we considered that on sample x_\{t,n,m\} 
+#'   \item \code{\link{compute_logdenom_bybox}} 
+#'   where we considered that a sample x_\{t,n,m\} 
 #'   is drawn from an unique 
 #'   proposal distribution with location parameter mu_\{t,n\}.
-#'   \item \code{\link{compute_logdenom_byrow}} where we considered that on sample  x_\{t,n,m\} 
+#'   \item \code{\link{compute_logdenom_byrow}} 
+#'   where we considered that a sample  x_\{t,n,m\} 
 #'   is drawn from an equiprobable mixture
 #'   of all proposal distributions at time t.
-#'   \item \code{\link{compute_logdenom_bytable}} where we considered that on sample x_\{t,n,m\} 
+#'   \item \code{\link{compute_logdenom_bytable}} 
+#'   where we considered that a sample x_\{t,n,m\} 
 #'   is drawn from an equiprobable mixture
 #'   of all available proposal distributions, for all times t = 1,..., T and 
 #'   chains of proposal n = 1,..., N.
@@ -53,12 +58,12 @@ compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
 #' @param sigma2  A numerical matrix of length D.
 #' It provides the variance of each dimension of the gaussian proposal distribution
 #' used in the sampling step.
-#' @param D  A integer providing the dimension of the space of inputs.
-#' @param T  A integer providing the number iterations used in the adaptation step.
-#' @param N  A integer providing the number of proposal distribution chains used.
-#' @param M  A integer providing the number of samples drawn from each proposal.
+#' @param D  An integer providing the dimension of the input space.
+#' @param T  An integer providing the number iterations used in the adaptation step.
+#' @param N  An integer providing the number of proposal distribution chains used.
+#' @param M  An integer providing the number of samples drawn from each proposal.
 #' 
-#' @return A array of dimension T x N x M with the logarithm of the 
+#' @return An array of dimension T x N x M with the logarithm of the 
 #' denominator needed to compute the importance sampling weights.
 #' 
 #' @examples
@@ -69,6 +74,8 @@ compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
 #' lpexp <- function(x){
 #'   dexp(x, log = TRUE)
 #' }
+#' 
+#' # Generates weighted samples for the exponential law
 #' pmc_lpexp_r <- pmc(lpexp,
 #'    mu = matrix(rnorm(D*N, mean = 1, sd = 1), nrow = D, ncol = N),
 #'    sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
@@ -77,26 +84,41 @@ compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
 #' with(pmc_lpexp_r, plot(x  = x, y = weight)))
 #' with(pmc_lpexp_r, compute_expectation(x, weight)) # theorical value: ~ [1]
 #' 
+#' # Recompute the denominator
+#' # with one gaussian proposal distribution associated to each sample.
 #' logdenom_bybox <- with(pmc_lpexp_r,
 #'                        compute_logdenom_bybox(x = x, mu = mu, sigma2 = 1,
 #'                                               D = D, T = T, N = N, M = M)
 #'                   )
+#' # Plot new weights associated to each sample
 #' with(pmc_lpexp_r, plot(x  = x, y = exp(loglik - logdenom_bybox)))
+#' # Estimate expectation with the new weights
 #' with(pmc_lpexp_r, compute_expectation(x  = x, weight = exp(loglik - logdenom_bybox)))
 #' 
+#' # Recompute the denominator
+#' # with a proposal distribution which is a mixture of
+#' # the N gaussian proposal distribution at time t.
 #' logdenom_byrow <- with(pmc_lpexp_r,
 #'                        compute_logdenom_byrow(x = x, mu = mu, sigma2 = 1,
 #'                                               D = D, T = T, N = N, M = M)
 #' )
+#' # Plot new weights associated to each sample
 #' with(pmc_lpexp_r, plot(x  = x, y = exp(loglik - logdenom_byrow)))
+#' # Estimate expectation with the new weights
 #' with(pmc_lpexp_r, compute_expectation(x  = x, weight = exp(loglik - logdenom_byrow)))
 #' 
+#' # Recompute the denominator
+#' # with a proposal distribution which is a mixture of
+#' # the T x N gaussian proposal distribution available.
 #' logdenom_bytable <- with(pmc_lpexp_r,
 #'                        compute_logdenom_bytable(x = x, mu = mu, sigma2 = 1,
 #'                                               D = D, T = T, N = N, M = M)
 #' )
+#' # Plot new weights associated to each sample
 #' with(pmc_lpexp_r, plot(x  = x, y = exp(loglik - logdenom_bytable)))
+#' # Estimate expectation with the new weights
 #' with(pmc_lpexp_r, compute_expectation(x  = x, weight = exp(loglik - logdenom_bytable)))
+#' 
 #' @export
 compute_logdenom_bytable <- function(x, mu, sigma2, D, T, N, M) {
     .Call('_AISamplR_compute_logdenom_bytable_rcpp', PACKAGE = 'AISamplR', x, mu, sigma2, D, T, N, M)
@@ -108,9 +130,5 @@ gen_mu_chain_apis_rcpp <- function(lp, mu, sigma2, T, M) {
 
 gen_mu_chain_pmc_rcpp <- function(lp, mu, sigma2, T, M) {
     .Call('_AISamplR_gen_mu_chain_pmc_rcpp', PACKAGE = 'AISamplR', lp, mu, sigma2, T, M)
-}
-
-rcpp_hello_world <- function() {
-    .Call('_AISamplR_rcpp_hello_world', PACKAGE = 'AISamplR')
 }
 
