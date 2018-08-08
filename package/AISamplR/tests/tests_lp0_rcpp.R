@@ -1,4 +1,7 @@
-# logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
+lposterior_0 <- function(x){
+  dexp(x, log = TRUE)
+}
+
 body_lp0 <- '
 // [[Rcpp::export]]
 double lposterior(NumericVector x){

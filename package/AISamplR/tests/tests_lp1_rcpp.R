@@ -1,3 +1,23 @@
+lposterior_1 <- function(x){
+  mu_1 <- c(-10, -10)
+  sigma_1 <- matrix(c(2, rep(0.6, 2), 1), ncol = 2, nrow = 2)
+  mu_2 <- c(0, 16)
+  sigma_2 <- matrix(c(2, rep(-0.4, 2), 2), ncol = 2, nrow = 2)
+  mu_3 <- c(13, 8)
+  sigma_3 <- matrix(c(2, rep(0.8, 2), 2), ncol = 2, nrow = 2)
+  mu_4 <- c(-9, 7)
+  sigma_4 <- matrix(c(3, rep(0, 2), 5), ncol = 2, nrow = 2)
+  mu_5 <- c(14, -14)
+  sigma_5 <- matrix(c(2, rep(-0.1, 2), 2), ncol = 2, nrow = 2)
+  f_1  <- mvtnorm::dmvnorm(x, mean = mu_1 , sigma = sigma_1) 
+  f_2  <- mvtnorm::dmvnorm(x, mean = mu_2 , sigma = sigma_2) 
+  f_3  <- mvtnorm::dmvnorm(x, mean = mu_3 , sigma = sigma_3) 
+  f_4  <- mvtnorm::dmvnorm(x, mean = mu_4 , sigma = sigma_4) 
+  f_5  <- mvtnorm::dmvnorm(x, mean = mu_5 , sigma = sigma_5) 
+  f <- f_1 + f_2 + f_3 + f_4 + f_5
+  log(f) - log(5)
+}
+
 # mu_true = rep(1.6, 1.4);
 body_lp1 <- '
 const double log2pi = std::log(2.0 * M_PI);

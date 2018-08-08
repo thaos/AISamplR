@@ -1,3 +1,9 @@
+lposterior_5 <- function(x){
+  mu <- rep(5, 10)
+  sigma <- diag(4, 10)
+  mvtnorm::dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
+}
+
 # mu_true = rep(5, 10);
 body_lp5 <- '
 const double log2pi = std::log(2.0 * M_PI);

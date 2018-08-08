@@ -1,3 +1,9 @@
+lposterior_4 <- function(x){
+  mu <- c(0, 16, 5, -5)
+  sigma <- diag(4, 4)
+  mvtnorm::dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
+}
+
 # mu_true = c(0, 16, 5, -5);
 body_lp4 <- '
 const double log2pi = std::log(2.0 * M_PI);

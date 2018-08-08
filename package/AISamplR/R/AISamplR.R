@@ -9,4 +9,7 @@
 #' @docType package
 #' @useDynLib AISamplR
 #' @name AISamplR
+#' 
+#' @importFrom grDevices rainbow
+#' @importFrom stats dexp dnorm median rmultinom rnorm runif weighted.mean
 NULL

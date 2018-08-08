@@ -1,3 +1,9 @@
+lposterior_2 <- function(x){
+  mu <- c(0, 16)
+  sigma <- matrix(c(3, rep(0, 2), 3), ncol = 2, nrow = 2)
+  mvtnorm::dmvnorm(x, mean = mu , sigma = sigma, log = TRUE) 
+}
+
 # mu_true = c(0, 16);
 body_lp2 <- '
 const double log2pi = std::log(2.0 * M_PI);

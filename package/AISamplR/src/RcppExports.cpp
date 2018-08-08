@@ -135,8 +135,6 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP _AISamplR_rcpp_hello_world();
-
 static const R_CallMethodDef CallEntries[] = {
     {"_AISamplR_simple_MH_rcpp", (DL_FUNC) &_AISamplR_simple_MH_rcpp, 4},
     {"_AISamplR_gen_xs_rcpp", (DL_FUNC) &_AISamplR_gen_xs_rcpp, 6},
@@ -146,7 +144,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_AISamplR_compute_logdenom_bytable_rcpp", (DL_FUNC) &_AISamplR_compute_logdenom_bytable_rcpp, 7},
     {"_AISamplR_gen_mu_chain_apis_rcpp", (DL_FUNC) &_AISamplR_gen_mu_chain_apis_rcpp, 5},
     {"_AISamplR_gen_mu_chain_pmc_rcpp", (DL_FUNC) &_AISamplR_gen_mu_chain_pmc_rcpp, 5},
-    {"_AISamplR_rcpp_hello_world",              (DL_FUNC) &_AISamplR_rcpp_hello_world,              0},
     {NULL, NULL, 0}
 };
 
