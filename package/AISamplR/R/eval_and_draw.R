@@ -5,10 +5,13 @@ eval_proposal <- function(x, mu, sigma2){
 }
 
 eval_proposals <- function(xmat, mu, sigma2){
+  xmat <- matrix(xmat, nrow = nrow(xmat))
   apply(xmat, 2, eval_proposal, mu = mu, sigma2 = sigma2)
 }
 
 eval_logposterior <- function(xmat, logposterior){
+  # dim(xmat) = c(D, 1, N)
+  xmat <- matrix(xmat, nrow = nrow(xmat))
   apply(xmat, 2, logposterior)
 }
 
