@@ -52,13 +52,16 @@ double lposterior(NumericVector x){
 lp4 <- make_lposterior_rcpp(body = body_lp4)
 
 D <- 4
+T <- 100
+N <- 20
+M <- 5
 
 pmc_lp4_rcpp <- 
   pmc(lp4$pointer,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(pmc_lp4_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(pmc_lp4_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -66,10 +69,10 @@ with(pmc_lp4_rcpp, compute_expectation(x, weight))
 
 pmc_lp4_r <- 
   pmc(lposterior_4,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(pmc_lp4_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(pmc_lp4_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -77,10 +80,10 @@ with(pmc_lp4_r, compute_expectation(x, weight))
 
 apis_lp4_rcpp <- 
   apis(lp4$pointer,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(apis_lp4_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(apis_lp4_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -88,10 +91,10 @@ with(apis_lp4_rcpp, compute_expectation(x, weight))
 
 apis_lp4_r <- 
   apis(lposterior_4,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(apis_lp4_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(apis_lp4_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -99,10 +102,10 @@ with(apis_lp4_r, compute_expectation(x, weight))
 
 lais_lp4_rcpp <- 
   lais(lp4$pointer,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(lais_lp4_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(lais_lp4_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -110,10 +113,10 @@ with(lais_lp4_rcpp, compute_expectation(x, weight))
 
 lais_lp4_r <- 
   lais(lposterior_4,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(lais_lp4_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(lais_lp4_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))

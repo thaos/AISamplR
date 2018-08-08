@@ -1,4 +1,4 @@
-# mu_true = rep(5, 10);
+# mu_true = c(0, 16);
 body_lp2 <- '
 const double log2pi = std::log(2.0 * M_PI);
 arma::vec Mahalanobis(arma::mat x, arma::rowvec center, arma::mat cov) {
@@ -48,13 +48,17 @@ double lposterior(NumericVector x){
 lp2 <- make_lposterior_rcpp(body = body_lp2)
 
 D <- 2
+T <- 100
+N <- 20
+M <- 5
+
 
 pmc_lp2_rcpp <- 
   pmc(lp2$pointer,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(pmc_lp2_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(pmc_lp2_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -62,10 +66,10 @@ with(pmc_lp2_rcpp, compute_expectation(x, weight))
 
 pmc_lp2_r <- 
   pmc(lposterior_2,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(pmc_lp2_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(pmc_lp2_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -73,10 +77,10 @@ with(pmc_lp2_r, compute_expectation(x, weight))
 
 apis_lp2_rcpp <- 
   apis(lp2$pointer,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(apis_lp2_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(apis_lp2_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -84,10 +88,10 @@ with(apis_lp2_rcpp, compute_expectation(x, weight))
 
 apis_lp2_r <- 
   apis(lposterior_2,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(apis_lp2_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(apis_lp2_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -95,10 +99,10 @@ with(apis_lp2_r, compute_expectation(x, weight))
 
 lais_lp2_rcpp <- 
   lais(lp2$pointer,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(lais_lp2_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(lais_lp2_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
@@ -106,10 +110,10 @@ with(lais_lp2_rcpp, compute_expectation(x, weight))
 
 lais_lp2_r <- 
   lais(lposterior_2,
-     mu = matrix(1:4, nrow = D, ncol = 100),
+     mu = matrix(1:4, nrow = D, ncol = N),
      sig2_adapt = rep(100, D), sig2_samp = rep(1, D),
      compute_logdenom = compute_logdenom_byrow,
-     N = 100, T = 1000, M = 5)
+     N = N, T = T, M = M)
 
 with(lais_lp2_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 with(lais_lp2_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
