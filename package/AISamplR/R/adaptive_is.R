@@ -188,47 +188,49 @@ apis <- create_adaptive_is(gen_mu_chains_apis)
 #'     N = N, T = T, M = M)
 #' with(pmc_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
 #' 
-#' # apis with an R function for the logposterior
-#' apis_lp6_r <- apis(lposterior_6,
-#'     mu = matrix(rnorm(D*N, sd = 3), nrow = D, ncol = N),
-#'     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
-#'     compute_logdenom = compute_logdenom_byrow,
-#'     N = N, T = T, M = M)
-#' with(apis_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
-#' 
-#' # lais with an R function for the logposterior
-#' lais_lp6_r <- lais(lposterior_6,
-#'     mu = matrix(rnorm(D * N, sd = 3), nrow = D, ncol = N),
-#'     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
-#'     compute_logdenom = compute_logdenom_byrow,
-#'     N = N, T = T, M = M)
-#' with(lais_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
-#' with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
-#' with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
-#'
-#' # With C++ code
-#' # Create a C++ function and a pointer to the function 
-#' # logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
-#'  body_lp6 <- '
-#'  // [[Rcpp::export]]
-#'  double lposterior(NumericVector x){
-#'  double x1 = x[0];
-#'  double x2 = x[1];
-#'  double logtarget = -1.0/32 * pow(4 - 10 * x1 - pow(x2, 2), 2) - pow(x1, 2)/50 - pow(x2, 2)/50;
-#'  return logtarget;
-#'  }'
-#' lp6 <- make_lposterior_rcpp(body = body_lp6)
-#'
-#' # lais with an external pointer to an C++ function
-#' lais_lp6_rcpp <-  lais(lp6$pointer,
-#'     mu = matrix(rnorm(D*N, sd = 3), nrow = D, ncol = N),
-#'     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
-#'     compute_logdenom = compute_logdenom_byrow,
-#'     N = N, T = T, M = M)
-#' with(lais_lp6_rcpp, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
-#' with(lais_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
-#' with(lais_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
-#' 
+#' # May take a bit of time
+#' \dontrun{
+#'   # apis with an R function for the logposterior
+#'   apis_lp6_r <- apis(lposterior_6,
+#'       mu = matrix(rnorm(D*N, sd = 3), nrow = D, ncol = N),
+#'       sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+#'       compute_logdenom = compute_logdenom_byrow,
+#'       N = N, T = T, M = M)
+#'   with(apis_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+#'   
+#'   # lais with an R function for the logposterior
+#'   lais_lp6_r <- lais(lposterior_6,
+#'       mu = matrix(rnorm(D * N, sd = 3), nrow = D, ncol = N),
+#'       sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+#'       compute_logdenom = compute_logdenom_byrow,
+#'       N = N, T = T, M = M)
+#'   with(lais_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+#'   with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
+#'   with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
+#'  
+#'   # With C++ code
+#'   # Create a C++ function and a pointer to the function 
+#'   # logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
+#'    body_lp6 <- '
+#'    // [[Rcpp::export]]
+#'    double lposterior(NumericVector x){
+#'    double x1 = x[0];
+#'    double x2 = x[1];
+#'    double logtarget = -1.0/32 * pow(4 - 10 * x1 - pow(x2, 2), 2) - pow(x1, 2)/50 - pow(x2, 2)/50;
+#'    return logtarget;
+#'    }'
+#'   lp6 <- make_lposterior_rcpp(body = body_lp6)
+#'  
+#'   # lais with an external pointer to an C++ function
+#'   lais_lp6_rcpp <-  lais(lp6$pointer,
+#'       mu = matrix(rnorm(D*N, sd = 3), nrow = D, ncol = N),
+#'       sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
+#'       compute_logdenom = compute_logdenom_byrow,
+#'       N = N, T = T, M = M)
+#'   with(lais_lp6_rcpp, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+#'   with(lais_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
+#'   with(lais_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
+#' }  
 #' @export
 lais <- function(logposterior,
                 mu, sig2_adapt = sig2_samp, sig2_samp,
