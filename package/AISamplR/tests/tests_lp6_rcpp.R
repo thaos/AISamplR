@@ -15,7 +15,7 @@ body_lp6 <- '
 double lposterior(NumericVector x){
   double x1 = x[0];
   double x2 = x[1];
-  double logtarget = -1.0/32 * pow(4 - 10 * x1 - pow(x2, 2), 2) - pow(x1, 2)/50 - pow(x2, 2)/50;
+  double logtarget = -1.0/32.0 * pow(4.0 - 10.0 * x1 - pow(x2, 2), 2) - pow(x1, 2)/50.0 - pow(x2, 2)/50.0;
   return logtarget;
 }
 '  

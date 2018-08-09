@@ -36,7 +36,7 @@ double lposterior(NumericVector x){
   int d2 = pow(d, 2);
   double mu_arr[d];
   for(std::size_t i = 0 ; i < d ; ++i ){
-    mu_arr[i] = 5;
+    mu_arr[i] = 5.0;
   }
   arma::rowvec mu(&mu_arr[0], d);
   double sigma_arr[d2];

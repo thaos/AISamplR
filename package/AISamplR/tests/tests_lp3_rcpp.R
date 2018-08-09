@@ -40,12 +40,12 @@ arma::vec dmvnorm_arma(arma::mat x, arma::rowvec mean, arma::mat sigma, bool log
 double lposterior(NumericVector x){
   int d = 2;
   int d2 = pow(d, 2);
-  double muarr_1[2] = {5, 0};
-  double muarr_2[2] = {0, 16};
+  double muarr_1[2] = {5.0, 0.0};
+  double muarr_2[2] = {0.0, 16.0};
   arma::rowvec mu1(&muarr_1[0], 2);
   arma::rowvec mu2(&muarr_2[0], 2);
-  double sigarr_1[4] = {2, 0.6, 0.6, 1};
-  double sigarr_2[4] = {3, 0, 0, 3};
+  double sigarr_1[4] = {2.0, 0.6, 0.6, 1.0};
+  double sigarr_2[4] = {3.0, 0.0, 0.0, 3.0};
   arma::mat sigma1(&sigarr_1[0], d, d);
   arma::mat sigma2(&sigarr_2[0], d, d);
   arma::mat xmat(1, x.length());

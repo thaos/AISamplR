@@ -46,21 +46,21 @@ arma::vec dmvnorm_arma(arma::mat x, arma::rowvec mean, arma::mat sigma, bool log
 }
 // [[Rcpp::export]]
 double lposterior(NumericVector x){
-  double muarr_1[2] = {-10, -10};
-  double muarr_2[2] = {0, 16};
-  double muarr_3[2] = {13, 8};
-  double muarr_4[2] = {-9, 7};
-  double muarr_5[2] = {14, -14};
+  double muarr_1[2] = {-10.0, -10.0};
+  double muarr_2[2] = {0.0, 16.0};
+  double muarr_3[2] = {13.0, 8.0};
+  double muarr_4[2] = {-9.0, 7.0};
+  double muarr_5[2] = {14.0, -14.0};
   arma::rowvec mu1(&muarr_1[0], 2);
   arma::rowvec mu2(&muarr_2[0], 2);
   arma::rowvec mu3(&muarr_3[0], 2);
   arma::rowvec mu4(&muarr_4[0], 2);
   arma::rowvec mu5(&muarr_5[0], 2);
-  double sigarr_1[4] = {2, 0.6, 0.6, 1};
-  double sigarr_2[4] = {2, -0.4, -0.4, 2};
-  double sigarr_3[4] = {2, 0.8, 0.8, 2};
-  double sigarr_4[4] = {3, 0, 0, 5};
-  double sigarr_5[4] = {2, -0.1, -0.1, 2};
+  double sigarr_1[4] = {2.0, 0.6, 0.6, 1.0};
+  double sigarr_2[4] = {2.0, -0.4, -0.4, 2.0};
+  double sigarr_3[4] = {2.0, 0.8, 0.8, 2.0};
+  double sigarr_4[4] = {3.0, 0.0, 0.0, 5.0};
+  double sigarr_5[4] = {2.0, -0.1, -0.1, 2.0};
   arma::mat sigma1(&sigarr_1[0], 2, 2);
   arma::mat sigma2(&sigarr_2[0], 2, 2);
   arma::mat sigma3(&sigarr_3[0], 2, 2);
