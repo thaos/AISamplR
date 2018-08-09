@@ -1,6 +1,6 @@
 Package: AISamplR
 Type: Package
-Title: Functions for Adapative Importance Sampling
+Title: Functions for Adpative Importance Sampling
 Version: 1.0
 Date: 2018-08-02
 Authors@R: c(person("Victor", "Elvira", email = "victor.elvira@imt-lille-douai.fr", role = c("aut")),
