@@ -3,8 +3,7 @@ importance_sampling <-
            mu_chains,
            sigma2,
            compute_logdenom = compute_logdenom_byrow,
-           T = 100, N = 2, M = 2)
-  {
+           T, N, M ) {
     D = dim(mu_chains)[1]
     xs_chain <-
       gen_xs_rcpp(mu = mu_chains, sigma2 = sigma2,
@@ -173,7 +172,8 @@ apis <- create_adaptive_is(gen_mu_chains_apis)
 #' lposterior_6 <- function(x){
 #'   x1 <- x[1]
 #'   x2 <- x[2]
-#'   logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
+#'   logtarget <-  -1/32 *
+#'     (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
 #' }
 #' 
 #' D <- 2

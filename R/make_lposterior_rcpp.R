@@ -22,7 +22,7 @@
 #' to \code{\link[Rcpp]{sourceCpp}} if necessary.
 #' @return A list with the following 2 elements: 
 #' \itemize{
-##'  \item{fun}{which is the C++ function that imported and useasble in R}
+##'  \item{fun}{which is the C++ function that imported and useable in R}
 ##'  \item{pointer}{an external pointer to the C++ function.
 ##'   It can be passed as the logposterior argument of 
 ##'   the functions \code{\link{lais}}, \code{\link{apis}} and \code{\link{pmc}}.}

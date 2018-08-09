@@ -141,7 +141,8 @@ In this package, three methods to compute the denominator of the weights are ava
 lposterior_6 <- function(x){
   x1 <- x[1]
   x2 <- x[2]
-  logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
+  logtarget <-  -1/32 *
+    (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
 }
 
 D <- 2

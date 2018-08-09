@@ -27,8 +27,8 @@ compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
 
 #' Computes the logarithm of the denominator of importance sampling weights.
 #' 
-#' \code{\link{compute_logdenom_bybox}}, code{\link{compute_logdenom_byrow}}
-#' and \code{\link{compute_logdenom_bytable}}
+#' \code{compute_logdenom_bybox}}, \code{compute_logdenom_byrow}
+#' and \code{compute_logdenom_bytable}
 #' offers three different ways to compute 
 #' the logarithm of the denominator of the importance sampling weights.
 #' 
@@ -38,15 +38,15 @@ compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
 #' or that one sample was drawn from a mixture of proposal distributions. 
 #' In this package, three methods to compute the denominator of the weights are available:
 #' \itemize{
-#'   \item \code{\link{compute_logdenom_bybox}} 
+#'   \item \code{compute_logdenom_bybox} 
 #'   where we considered that a sample x_\{t,n,m\} 
 #'   is drawn from an unique 
 #'   proposal distribution with location parameter mu_\{t,n\}.
-#'   \item \code{\link{compute_logdenom_byrow}} 
+#'   \item \code{compute_logdenom_byrow} 
 #'   where we considered that a sample  x_\{t,n,m\} 
 #'   is drawn from an equiprobable mixture
 #'   of all proposal distributions at time t.
-#'   \item \code{\link{compute_logdenom_bytable}} 
+#'   \item \code{compute_logdenom_bytable} 
 #'   where we considered that a sample x_\{t,n,m\} 
 #'   is drawn from an equiprobable mixture
 #'   of all available proposal distributions, for all times t = 1,..., T and 
