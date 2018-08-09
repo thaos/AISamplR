@@ -27,7 +27,7 @@ compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
 
 #' Computes the logarithm of the denominator of importance sampling weights.
 #' 
-#' \code{compute_logdenom_bybox}}, \code{compute_logdenom_byrow}
+#' \code{compute_logdenom_bybox}, \code{compute_logdenom_byrow}
 #' and \code{compute_logdenom_bytable}
 #' offers three different ways to compute 
 #' the logarithm of the denominator of the importance sampling weights.
