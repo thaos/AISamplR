@@ -17,12 +17,14 @@
 #' @param ... additional parameters for the function \code{f}.
 #' 
 #' @examples
-#' # draw samples from the "banana shaped distribution" defined by the loglikelihood lposterior_6.
+#' # draw samples from the "banana shaped distribution"
+#' # defined by the loglikelihood lposterior_6.
 #' 
 #' lposterior_6 <- function(x){
 #'   x1 <- x[1]
 #'   x2 <- x[2]
-#'   logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
+#'   logtarget <-  -1/32 * 
+#'     (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
 #' }
 #' 
 #' D <- 2
@@ -40,10 +42,12 @@
 #' Ex <- with(lais_lp6_r, compute_expectation(x, weight))
 #' 
 #' # expectation of x^2
-#' Ex2 <- with(lais_lp6_r, compute_expectation(x, weight, f = function(x) x^2))
+#' Ex2 <- with(lais_lp6_r,
+#'  compute_expectation(x, weight, f = function(x) x^2))
 #'
 #' # variance of x
-#' with(lais_lp6_r, compute_expectation(x, weight, f = function(x) (x - Ex)^2))
+#' with(lais_lp6_r,
+#'  compute_expectation(x, weight, f = function(x) (x - Ex)^2))
 #' Ex2 - Ex^2
 #' @export
 compute_expectation <- function(x, weight, f = identity, ...){
@@ -68,12 +72,14 @@ compute_expectation <- function(x, weight, f = identity, ...){
 #' @param ... additional arguments for the function \code{\link[rgl]{plot3d}}.
 #' @examples
 #' 
-#' # draw samples from the "banana shaped distribution" defined by the loglikelihood lposterior_6.
+#' # draw samples from the "banana shaped distribution"
+#' # defined by the loglikelihood lposterior_6.
 #' 
 #' lposterior_6 <- function(x){
 #'   x1 <- x[1]
 #'   x2 <- x[2]
-#'   logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
+#'   logtarget <-  -1/32 *
+#'    (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
 #' }
 #' D <- 2
 #' T <- 100

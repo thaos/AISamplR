@@ -24,12 +24,14 @@ It produces a 3D scatterplot with a rainbow color scale for the z-axis.
 }
 \examples{
 
-# draw samples from the "banana shaped distribution" defined by the loglikelihood lposterior_6.
+# draw samples from the "banana shaped distribution"
+# defined by the loglikelihood lposterior_6.
 
 lposterior_6 <- function(x){
   x1 <- x[1]
   x2 <- x[2]
-  logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
+  logtarget <-  -1/32 *
+   (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
 }
 D <- 2
 T <- 100

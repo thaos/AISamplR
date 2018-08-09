@@ -84,42 +84,55 @@ compute_logdenom_byrow <- function(x, mu, sigma2, D, T, N, M) {
 #'    compute_logdenom = compute_logdenom_byrow,
 #'    N = N, T = T, M = M)
 #' with(pmc_lpexp_r, plot(x  = x, y = weight))
-#' with(pmc_lpexp_r, compute_expectation(x, weight)) # theorical value: ~ [1]
+#' # theorical value: ~ [1]
+#' with(pmc_lpexp_r, compute_expectation(x, weight)) 
 #' 
 #' # Recompute the denominator
 #' # with one gaussian proposal distribution associated to each sample.
-#' logdenom_bybox <- with(pmc_lpexp_r,
-#'                        compute_logdenom_bybox(x = x, mu = mu, sigma2 = 1,
-#'                                               D = D, T = T, N = N, M = M)
-#'                   )
+#' logdenom_bybox <- 
+#'   with(pmc_lpexp_r,
+#'        compute_logdenom_bybox(x = x, mu = mu, sigma2 = 1,
+#'                               D = D, T = T, N = N, M = M)
+#'   )
 #' # Plot new weights associated to each sample
 #' with(pmc_lpexp_r, plot(x  = x, y = exp(loglik - logdenom_bybox)))
 #' # Estimate expectation with the new weights
-#' with(pmc_lpexp_r, compute_expectation(x  = x, weight = exp(loglik - logdenom_bybox)))
+#' with(pmc_lpexp_r,
+#'      compute_expectation(x  = x,
+#'                          weight = exp(loglik - logdenom_bybox))
+#' )
 #' 
 #' # Recompute the denominator
 #' # with a proposal distribution which is a mixture of
 #' # the N gaussian proposal distribution at time t.
-#' logdenom_byrow <- with(pmc_lpexp_r,
-#'                        compute_logdenom_byrow(x = x, mu = mu, sigma2 = 1,
-#'                                               D = D, T = T, N = N, M = M)
-#' )
+#' logdenom_byrow <- 
+#'  with(pmc_lpexp_r,
+#'           compute_logdenom_byrow(x = x, mu = mu, sigma2 = 1,
+#'                                  D = D, T = T, N = N, M = M)
+#'  )
 #' # Plot new weights associated to each sample
 #' with(pmc_lpexp_r, plot(x  = x, y = exp(loglik - logdenom_byrow)))
 #' # Estimate expectation with the new weights
-#' with(pmc_lpexp_r, compute_expectation(x  = x, weight = exp(loglik - logdenom_byrow)))
+#' with(pmc_lpexp_r,
+#'      compute_expectation(x  = x,
+#'                          weight = exp(loglik - logdenom_byrow))
+#' )
 #' 
 #' # Recompute the denominator
 #' # with a proposal distribution which is a mixture of
 #' # the T x N gaussian proposal distribution available.
-#' logdenom_bytable <- with(pmc_lpexp_r,
-#'                        compute_logdenom_bytable(x = x, mu = mu, sigma2 = 1,
-#'                                               D = D, T = T, N = N, M = M)
-#' )
+#' logdenom_bytable <- 
+#'   with(pmc_lpexp_r,
+#'        compute_logdenom_bytable(x = x, mu = mu, sigma2 = 1,
+#'                                 D = D, T = T, N = N, M = M)
+#'   )
 #' # Plot new weights associated to each sample
 #' with(pmc_lpexp_r, plot(x  = x, y = exp(loglik - logdenom_bytable)))
 #' # Estimate expectation with the new weights
-#' with(pmc_lpexp_r, compute_expectation(x  = x, weight = exp(loglik - logdenom_bytable)))
+#' with(pmc_lpexp_r,
+#'      compute_expectation(x  = x,
+#'                          weight = exp(loglik - logdenom_bytable))
+#' )
 #' 
 #' @export
 compute_logdenom_bytable <- function(x, mu, sigma2, D, T, N, M) {

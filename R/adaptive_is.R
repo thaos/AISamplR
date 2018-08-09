@@ -168,7 +168,8 @@ apis <- create_adaptive_is(gen_mu_chains_apis)
 #'   associated with the samples in \code{x}.}
 ##' }
 #' @examples
-#' # draw samples from the "banana shaped distribution" defined by the loglikelihood lposterior_6.
+#' # draw samples from the "banana shaped distribution"
+#' # defined by the loglikelihood lposterior_6.
 #' lposterior_6 <- function(x){
 #'   x1 <- x[1]
 #'   x2 <- x[2]
@@ -186,7 +187,8 @@ apis <- create_adaptive_is(gen_mu_chains_apis)
 #'     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
 #'     compute_logdenom = compute_logdenom_byrow,
 #'     N = N, T = T, M = M)
-#' with(pmc_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+#' # theorical value: ~ [-1.09, 0]
+#' with(pmc_lp6_r, compute_expectation(x, weight)) 
 #' 
 #' # May take a bit of time
 #' \dontrun{
@@ -196,7 +198,8 @@ apis <- create_adaptive_is(gen_mu_chains_apis)
 #'       sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
 #'       compute_logdenom = compute_logdenom_byrow,
 #'       N = N, T = T, M = M)
-#'   with(apis_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+#'   # theorical value: ~ [-1.09, 0]
+#'   with(apis_lp6_r, compute_expectation(x, weight)) 
 #'   
 #'   # lais with an R function for the logposterior
 #'   lais_lp6_r <- lais(lposterior_6,
@@ -204,7 +207,8 @@ apis <- create_adaptive_is(gen_mu_chains_apis)
 #'       sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
 #'       compute_logdenom = compute_logdenom_byrow,
 #'       N = N, T = T, M = M)
-#'   with(lais_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+#'   # theorical value: ~ [-1.09, 0]
+#'   with(lais_lp6_r, compute_expectation(x, weight)) 
 #'   with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 #'   with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
 #'  
@@ -216,7 +220,8 @@ apis <- create_adaptive_is(gen_mu_chains_apis)
 #'    double lposterior(NumericVector x){
 #'    double x1 = x[0];
 #'    double x2 = x[1];
-#'    double logtarget = -1.0/32 * pow(4 - 10 * x1 - pow(x2, 2), 2) - pow(x1, 2)/50 - pow(x2, 2)/50;
+#'    double logtarget = -1.0/32 *
+#'      pow(4 - 10 * x1 - pow(x2, 2), 2) - pow(x1, 2)/50 - pow(x2, 2)/50;
 #'    return logtarget;
 #'    }'
 #'   lp6 <- make_lposterior_rcpp(body = body_lp6)
@@ -227,7 +232,8 @@ apis <- create_adaptive_is(gen_mu_chains_apis)
 #'       sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
 #'       compute_logdenom = compute_logdenom_byrow,
 #'       N = N, T = T, M = M)
-#'   with(lais_lp6_rcpp, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+#'   # theorical value: ~ [-1.09, 0]
+#'   with(lais_lp6_rcpp, compute_expectation(x, weight)) 
 #'   with(lais_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
 #'   with(lais_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
 #' }  
