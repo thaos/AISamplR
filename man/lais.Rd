@@ -136,11 +136,13 @@ In this package, three methods to compute the denominator of the weights are ava
 }
 }
 \examples{
-# draw samples from the "banana shaped distribution" defined by the loglikelihood lposterior_6.
+# draw samples from the "banana shaped distribution"
+# defined by the loglikelihood lposterior_6.
 lposterior_6 <- function(x){
   x1 <- x[1]
   x2 <- x[2]
-  logtarget <-  -1/32 * (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
+  logtarget <-  -1/32 *
+    (4 - 10 * x1 - x2^2)^2 - x1^2/50 - x2^2/50
 }
 
 D <- 2
@@ -154,7 +156,8 @@ pmc_lp6_r <- pmc(lposterior_6,
     sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
     compute_logdenom = compute_logdenom_byrow,
     N = N, T = T, M = M)
-with(pmc_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+# theorical value: ~ [-1.09, 0]
+with(pmc_lp6_r, compute_expectation(x, weight)) 
 
 # May take a bit of time
 \dontrun{
@@ -164,7 +167,8 @@ with(pmc_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
       sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
       compute_logdenom = compute_logdenom_byrow,
       N = N, T = T, M = M)
-  with(apis_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+  # theorical value: ~ [-1.09, 0]
+  with(apis_lp6_r, compute_expectation(x, weight)) 
   
   # lais with an R function for the logposterior
   lais_lp6_r <- lais(lposterior_6,
@@ -172,7 +176,8 @@ with(pmc_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
       sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
       compute_logdenom = compute_logdenom_byrow,
       N = N, T = T, M = M)
-  with(lais_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+  # theorical value: ~ [-1.09, 0]
+  with(lais_lp6_r, compute_expectation(x, weight)) 
   with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
   with(lais_lp6_r, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
  
@@ -184,7 +189,8 @@ with(pmc_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
    double lposterior(NumericVector x){
    double x1 = x[0];
    double x2 = x[1];
-   double logtarget = -1.0/32 * pow(4 - 10 * x1 - pow(x2, 2), 2) - pow(x1, 2)/50 - pow(x2, 2)/50;
+   double logtarget = -1.0/32 *
+     pow(4 - 10 * x1 - pow(x2, 2), 2) - pow(x1, 2)/50 - pow(x2, 2)/50;
    return logtarget;
    }'
   lp6 <- make_lposterior_rcpp(body = body_lp6)
@@ -195,7 +201,8 @@ with(pmc_lp6_r, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
       sig2_adapt = rep(1, D), sig2_samp = rep(1, D),
       compute_logdenom = compute_logdenom_byrow,
       N = N, T = T, M = M)
-  with(lais_lp6_rcpp, compute_expectation(x, weight)) # theorical value: ~ [-1.09, 0]
+  # theorical value: ~ [-1.09, 0]
+  with(lais_lp6_rcpp, compute_expectation(x, weight)) 
   with(lais_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], exp(loglik)))
   with(lais_lp6_rcpp, rgl_plot(x[1,,,], x[2,,,], sqrt(weight)))
 }  

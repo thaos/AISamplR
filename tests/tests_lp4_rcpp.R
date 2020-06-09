@@ -34,7 +34,7 @@ arma::vec dmvnorm_arma(arma::mat x, arma::rowvec mean, arma::mat sigma, bool log
 double lposterior(NumericVector x){
   int d = 4;
   int d2 = pow(d, 2);
-  double mu_arr[d] = {0.0, 16.0, 5.0, -5.0};
+  double mu_arr[4] = {0.0, 16.0, 5.0, -5.0};
   arma::rowvec mu(&mu_arr[0], d);
   double sigma_arr[d2];
   for(std::size_t i = 0 ; i < d2 ; ++i ){
