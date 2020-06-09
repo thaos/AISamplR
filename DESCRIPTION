@@ -16,4 +16,4 @@ Imports: Rcpp (>= 0.12.18), RcppArmadillo
 LinkingTo: Rcpp, RcppArmadillo, RcppProgress
 Suggests: rgl, mvtnorm
 RoxygenNote: 6.1.0
-Maintainer: Soulivanh Thao <soulivanh.thao@lsce.ipsl.fr>
+
